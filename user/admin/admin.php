@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,5 +17,10 @@
 </head>
 <body>
     <a href="staff_creation.php">Staffs</a>
+
+    <form action="../../api/logout.php" method="POST">
+        <button type="submit">Logout</button>
+    </form>
+
 </body>
 </html>
