@@ -1,5 +1,5 @@
 <?php 
-include "../api/create_staff.php"
+include "../../api/create_staff.php";
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ include "../api/create_staff.php"
         <input type="text" name="email" placeholder="Email">
         <input type="text" name="password" placeholder="Password">
         <input type="text" name="password_confirm" placeholder="Password Confirm">
-        <button type="submit" name="signup">Sign Up</button>
+        <button type="submit" name="signup">Create Staff</button>
     </form>
 
     <p><?php

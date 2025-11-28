@@ -17,6 +17,7 @@ if (!isset($_SESSION['id'])) {
 </head>
 <body>
     <a href="staff_creation.php">Staffs</a>
+    <a href="inventory_management.php">Inventory Management</a>
 
     <form action="../../api/logout.php" method="POST">
         <button type="submit">Logout</button>
