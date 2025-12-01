@@ -1,0 +1,86 @@
+<?php
+require '../../db.php';
+
+$message = '';
+
+
+        $customer_sql = "SELECT id, name FROM customers ORDER BY name ASC";
+        $customers = $conn->query($customer_sql)->fetchAll();
+
+        $inventory_sql = "SELECT id, item_name, qty FROM inventory ORDER BY item_name ASC";
+        $items = $conn->query($inventory_sql)->fetchAll();
+
+if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_customer'){
+    $name = trim($_POST['customer_name']);
+    $phone = trim($_POST['customer_phone']);
+    //  $user_id = $_SESSION['id'];
+
+    if(!empty($name)){
+        try{
+            $sql = "INSERT INTO customers (name, phone) VALUES (?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$name, $phone]);
+
+            header("Location: sales.php?success=1");
+            exit();
+
+            // $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+            // $log_stmt = $conn->prepare($log_sql);
+            // $log_stmt->execute([$user_id, "customer_added"]);
+        } catch (PDOException $e) {
+            $message = '<div style="color: red;">Database Error: ' . $e->getMessage() . '</div>';
+        }
+    }
+}
+
+    if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'create_sale'){
+        $customer_id = $_POST['customer_id'];
+        $item_id = $_POST['item_id'];
+        $sold_qty = $_POST['qty'];
+        //  $user_id = $_SESSION['id'];
+
+        if ($customer_id < 0 || $item_id < 0 || $sold_qty <= 0){
+            $message = '<div style="color: red;">Error: Please select a customer, item, and enter a valid quantity.</div>';
+        } else {
+            $conn->beginTransaction();
+
+            $stock_check_sql = "SELECT qty, item_name FROM inventory WHERE id = ?";
+            $stock_stmt = $conn->prepare($stock_check_sql);
+            $stock_stmt->execute([$item_id]);
+            $item_data = $stock_stmt->fetch();
+
+            if(!$item_data || $item_data['qty'] < $sold_qty){
+                $conn->rollback();
+                $message = '<div style="color: red;">Error: Insufficient stock for ' . htmlspecialchars($item_data['item_name'] ?? 'item') . '. Only ' . ($item_data['qty'] ?? 0) . ' available.</div>';
+            } else {
+                $sale_sql = "INSERT INTO sales (customer_id, item_id, qty, date_created) VALUES (?, ?, ?, NOW())";
+                $sale_stmt = $conn->prepare($sale_sql);
+                $sale_stmt->execute([$customer_id, $item_id, $sold_qty]);
+
+                $update_sql = "UPDATE inventory SET qty = qty - ? WHERE id = ?";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->execute([$sold_qty, $item_id]);
+
+                $conn->commit();
+                $inventory_sql = "SELECT id, item_name, qty FROM inventory ORDER BY item_name ASC";
+                $items = $conn->query($inventory_sql)->fetchAll();
+                $message = '<div style="color: green;">Sale recorded successfully! Inventory updated.</div>';
+                // $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+                // $log_stmt = $conn->prepare($log_sql);
+                // $log_stmt->execute([$user_id, "Sale" . $item_data['item_name']]);
+            }
+
+
+        }
+    }
+
+    $recent_sql = "SELECT s.id AS sale_id, c.name AS customer_name, i.item_name, s.qty AS quantity_sold, s.date_created
+                   FROM sales s
+                   JOIN customers c ON s.customer_id = c.id
+                   JOIN inventory i ON s.item_id = i.id
+                   ORDER BY s.date_created DESC
+                   LIMIT 10";
+
+    $sales_history = $conn->query($recent_sql)->fetchAll();
+
+?>
