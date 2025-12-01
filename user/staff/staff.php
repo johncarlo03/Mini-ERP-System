@@ -16,7 +16,7 @@ if (!isset($_SESSION['id'])) {
     <title>Document</title>
 </head>
 <body>
-    <form action="../../api/logout.php" method="POST">
+    <form action="../../backend/logout.php" method="POST">
         <button type="submit">Logout</button>
     </form>
 

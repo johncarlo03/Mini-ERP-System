@@ -1,6 +1,6 @@
 <?php
 
-include "../../api/inventory.php";
+include "../../backend/inventory.php";
 
 ?>
 
@@ -40,7 +40,7 @@ include "../../api/inventory.php";
                 <button type="submit">Add Item to Stock</button>
             </form>
 
-            <form action="../../api/delete_item.php" method="POST">
+            <form action="../../backend/delete_item.php" method="POST">
                 <input type="hidden" id="delete_product_id" name="delete_id">
                 <button type="submit"  id="deleteBtn" disabled>Delete</button>
                 </form>
@@ -84,7 +84,7 @@ include "../../api/inventory.php";
                                 )">
                                     Edit
                                 </button>
-                                 <form action="../../api/delete_item.php" method="POST">
+                                 <form action="../../backend/delete_item.php" method="POST">
                                     <input type="hidden" value="<?php echo htmlspecialchars($item['id']); ?>"name="delete_id">
                                     <button type="submit">Delete</button>
                                 </form>
