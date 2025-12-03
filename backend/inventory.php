@@ -11,6 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_name = trim($_POST['item_name']);
     $description = trim($_POST['description']);
     $qty = (int)$_POST['qty'];
+    $user_id = $_SESSION['id'];
 
     // Basic Validation
     if (empty($item_name) || $qty < 0) {
@@ -37,10 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $message = '<div>Item **"' . htmlspecialchars($item_name) . '"** added successfully!</div>';
 
-            // $action = "Added item: " . $item_name . " (Qty: " . $qty . ")";
-            // $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
-            // $log_stmt = $conn->prepare($log_sql);
-            // $log_stmt->execute([$user_id, $action]);
+            $action = "Added item: " . $item_name . " (Qty: " . $qty . ")";
+            $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+            $log_stmt = $conn->prepare($log_sql);
+            $log_stmt->execute([$user_id, $action]);
 
             }
             

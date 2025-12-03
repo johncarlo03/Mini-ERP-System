@@ -7,7 +7,10 @@ include "../../backend/sell.php";
     <meta charset="UTF-8">
     <title>Mini ERP - Sales & CRM</title>
 </head>
-<body>
+<body> 
+    <form action="../../backend/logout.php" method="POST">
+        <button type="submit">Logout</button>
+    </form>
     <h1>🛒 Sales & Customer Management</h1>
     
     <?php echo $message; // Display status messages ?>

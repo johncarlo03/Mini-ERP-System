@@ -1,8 +1,8 @@
+
 <?php
 require '../../db.php';
 
 $message = '';
-
 
         $customer_sql = "SELECT id, name FROM customers ORDER BY name ASC";
         $customers = $conn->query($customer_sql)->fetchAll();
@@ -13,7 +13,7 @@ $message = '';
 if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_customer'){
     $name = trim($_POST['customer_name']);
     $phone = trim($_POST['customer_phone']);
-    //  $user_id = $_SESSION['id'];
+    $user_id = $_SESSION['id'];
 
     if(!empty($name)){
         try{
@@ -21,12 +21,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_cust
             $stmt = $conn->prepare($sql);
             $stmt->execute([$name, $phone]);
 
+            $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+            $log_stmt = $conn->prepare($log_sql);
+            $log_stmt->execute([$user_id, "Customer: ". $name . " is added."]);
+
             header("Location: sales.php?success=1");
             exit();
-
-            // $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
-            // $log_stmt = $conn->prepare($log_sql);
-            // $log_stmt->execute([$user_id, "customer_added"]);
         } catch (PDOException $e) {
             $message = '<div style="color: red;">Database Error: ' . $e->getMessage() . '</div>';
         }
@@ -37,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_cust
         $customer_id = $_POST['customer_id'];
         $item_id = $_POST['item_id'];
         $sold_qty = $_POST['qty'];
-        //  $user_id = $_SESSION['id'];
+        $user_id = $_SESSION['id'];
 
         if ($customer_id < 0 || $item_id < 0 || $sold_qty <= 0){
             $message = '<div style="color: red;">Error: Please select a customer, item, and enter a valid quantity.</div>';
@@ -65,9 +65,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_cust
                 $inventory_sql = "SELECT id, item_name, qty FROM inventory ORDER BY item_name ASC";
                 $items = $conn->query($inventory_sql)->fetchAll();
                 $message = '<div style="color: green;">Sale recorded successfully! Inventory updated.</div>';
-                // $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
-                // $log_stmt = $conn->prepare($log_sql);
-                // $log_stmt->execute([$user_id, "Sale" . $item_data['item_name']]);
+                $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+                $log_stmt = $conn->prepare($log_sql);
+                $log_stmt->execute([$user_id, "Sold " . $sold_qty . " pcs of " . $item_data['item_name']]);
             }
 
 

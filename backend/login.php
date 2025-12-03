@@ -20,7 +20,6 @@ if (isset($_POST['login'])) {
     if (empty($email) || empty($password)) {
         $error_message = "Please enter both email and password.";
     } else {
-            // 3. Use a prepared statement to prevent SQL Injection
             $sql = "SELECT id, password_hash, name, roles FROM users WHERE email = :email";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':email', $email);
@@ -28,29 +27,27 @@ if (isset($_POST['login'])) {
 
             $user = $stmt->fetch();
 
-            // 4. Check if a user was found
+
             if ($user) {
-                // 5. Securely verify the password hash using password_verify()
                 if (password_verify($password, $user['password_hash'])) {
-                    
-                    // --- SUCCESSFUL LOGIN ---
-                    // Set session variables
+
                     $_SESSION['id'] = $user['id'];
                     $_SESSION['name'] = $user['name'];
-                    $_SESSION['roles'] = $user['roles']; // Store the user's role
+                    $_SESSION['roles'] = $user['roles'];
 
-                    // 6. Redirect based on the stored role
+                    $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+                    $log_stmt = $conn->prepare($log_sql);
+                    
                     if ($user['roles'] === "staff") {
-                        header("Location: staff/staff.php");
+                        $log_stmt->execute([$_SESSION['id'], "Staff ". $_SESSION['name'] . " has logged in."]);
+                        header("Location: staff/sales.php");
                         exit();
                     } elseif ($user['roles'] === "admin") {
+                        $log_stmt->execute([$_SESSION['id'], "Administrator ". $_SESSION['name'] . " has logged in."]);
                         header("Location: admin/admin.php");
                         exit();
                     } else {
-                        // Default redirection for standard users
                         $success_message = "Login successful! Welcome back, " . htmlspecialchars($user['username']) . ".";
-                        // Example: header("Location: user_dashboard.php");
-                        // exit();
                     }
 
                 } else {
