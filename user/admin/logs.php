@@ -14,26 +14,29 @@ include "../../backend/audit.php";
 <body>
     <?php include "sidebar.php"; ?>
     <div class="ml-64 p-10">
-     <table>
-            <thead>
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">Logs</h1>
+    <div class="bg-white rounded-lg shadow-xl overflow-x-auto">
+     <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
                 <tr>
-                    <th>Log ID</th>
-                    <th>Username</th>
-                    <th>Action</th>
-                    <th>Date & Time</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Log ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-white divide-y divide-gray-200">
                 <?php foreach ($logs as $log): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($log['id']); ?></td>
-                        <td><?php echo htmlspecialchars($log['name']); ?></td>
-                        <td><?php echo htmlspecialchars($log['action']); ?></td>
-                        <td><?php echo htmlspecialchars($log['date_time']); ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($log['id']); ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($log['name']); ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($log['action']); ?></td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($log['date_time']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
     </div>
 </body>
 </html>

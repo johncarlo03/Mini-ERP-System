@@ -63,7 +63,7 @@ body {
         }
 
         /* Button hover pulse animation */
-        button:hover {
+        /* button:hover {
             animation: pulse 1.2s infinite;
         }
         @keyframes pulse {
@@ -73,7 +73,7 @@ body {
             50% {
                 box-shadow: 0 0 10px 6px rgba(63, 83, 145, 0.4);
             }
-        }
+        } */
 .sidebar {
     width: 250px;
     background-color: #2C3D74;
