@@ -1,0 +1,28 @@
+body {
+  background: #f1f4f9;
+}
+
+.login-card {
+  max-width: 420px;
+  margin: auto;
+  margin-top: 8%;
+  padding: 40px 35px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.login-title {
+  font-weight: 700;
+  font-size: 1.7rem;
+}
+
+.btn-custom {
+  background: #0d6efd;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-custom:hover {
+  background: #0b5ed7;
+}

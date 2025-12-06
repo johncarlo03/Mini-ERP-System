@@ -1,27 +1,50 @@
 <?php
-// ====================================================================
-// 1. DATABASE CONNECTION AND INITIAL SETUP
-// ====================================================================
-require '../../db.php'; // Ensure your db_connect.php is in the same directory
+require '../../db.php';
 
-$message = ''; // To display success or error messages
+$message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = isset($_POST["id"]) ? trim($_POST["id"]) : '';
     $item_name = trim($_POST['item_name']);
     $description = trim($_POST['description']);
     $qty = (int)$_POST['qty'];
+    $user_id = $_SESSION['id'];
 
-    // Basic Validation
+    
     if (empty($item_name) || $qty < 0) {
         $message = '<div>Error: Item Name is required and Quantity must be 0 or more.</div>';
     } elseif(!empty($id)){
+
+        $item_edit = "SELECT item_name, description, qty FROM inventory WHERE id = ?";
+        $item_edit_stmt = $conn->prepare($item_edit);
+        $item_edit_stmt->execute([$id]);
+        $edited_item = $item_edit_stmt->fetch(PDO::FETCH_ASSOC);
+
         $edit_sql = "UPDATE inventory SET item_name = ?, qty = ?, description = ? WHERE id = ?";
         $edit_stmt = $conn->prepare($edit_sql);
         $edit_stmt->execute([$item_name, $qty, $description, $id]);
+
+        $action_logs = [];
+        if($edited_item['item_name'] !== $item_name){
+            $action_logs[] = "Item name changed to {$item_name} ";
+        }
+
+        if($edited_item['qty'] != $qty){
+            $action_logs[] = "$item_name quantity changed from {$edited_item['qty']} to {$qty} ";
+        }
+
+        if (empty($action_logs)) {
+        $action = "Item (ID: {$id}) updated, but no logged fields were changed.";
+            } else {
+        // Combine all changes into one string for the log
+        $action = "Inventory Update (ID: {$id}): " . implode("and ", $action_logs);
+    }
+
+        $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+        $log_stmt = $conn->prepare($log_sql);
+        $log_stmt->execute([$user_id, $action]);
     } else {
         try {
-            // Prepare the INSERT statement for inventory
             $check_sql = "SELECT COUNT(*) FROM inventory WHERE item_name = ?";
             $check_stmt = $conn->prepare($check_sql);
             $check_stmt->execute([$item_name]);
@@ -37,10 +60,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $message = '<div>Item **"' . htmlspecialchars($item_name) . '"** added successfully!</div>';
 
-            // $action = "Added item: " . $item_name . " (Qty: " . $qty . ")";
-            // $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
-            // $log_stmt = $conn->prepare($log_sql);
-            // $log_stmt->execute([$user_id, $action]);
+            $action = "Added item: " . $item_name . " (Qty: " . $qty . ")";
+            $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+            $log_stmt = $conn->prepare($log_sql);
+            $log_stmt->execute([$user_id, $action]);
 
             }
             
