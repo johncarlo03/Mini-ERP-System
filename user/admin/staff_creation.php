@@ -116,7 +116,7 @@ include "../../backend/create_staff.php";
 
         <form method="POST" action="../../backend/delete_item.php" id="deleteForm">
             <input type="hidden" name="action" value="delete_user">
-            <input type="number" id="delete_user_id" name="delete_user_id">
+            <input type="hidden" id="delete_user_id" name="delete_user_id">
         </form>
 
 

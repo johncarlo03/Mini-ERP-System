@@ -4,6 +4,8 @@ include "../../db.php";
 $staff_sql = "SELECT id, name, email, roles FROM users ORDER BY id ASC";
 $staffs = $conn->query($staff_sql)->fetchAll();
 
+$user_id = $_SESSION['id'];
+
 if (isset($_POST['signup'])) {
 
     // 2. Retrieve and sanitize user input
@@ -13,7 +15,38 @@ if (isset($_POST['signup'])) {
     $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $password = $_POST['password'];
     $password_confirm = $_POST['password_confirm']; 
+
     if (!empty($id)) {
+            $sql_old = "SELECT name, email, roles FROM users WHERE id = ?";
+            $stmt_old = $conn->prepare($sql_old);
+            $stmt_old->execute([$id]);
+            $old = $stmt_old->fetch(PDO::FETCH_ASSOC);
+
+
+            $changes = [];
+
+if ($old['name'] !== $name) {
+    $changes[] = "Name: {$old['name']} → {$name}";
+}
+
+if ($old['email'] !== $email) {
+    $changes[] = "Email: {$old['email']} → {$email}";
+}
+
+if ($old['roles'] !== $role) {
+    $changes[] = "Role: {$old['roles']} → {$role}";
+}
+
+if (!empty($password)) {
+    $changes[] = "Password: updated";
+}
+
+if (!empty($changes)) {
+    $change_details = implode(", ", $changes);
+    $action = "Administrator updated User (ID: $id) – Changes: $change_details";
+} else {
+    $action = "Administrator updated User (ID: $id) – No changes detected";
+}
 
             if (!empty($password)) {
             if ($password !== $password_confirm) {
@@ -50,7 +83,12 @@ if (isset($_POST['signup'])) {
 
                 $stmt_update->execute();
                 $success_message = "User updated successfully!";
-                $staffs = $conn->query($staff_sql)->fetchAll();
+                $staffs = $conn->query($staff_sql)->fetchAll(); 
+                
+                $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+                $log_stmt = $conn->prepare($log_sql);
+                $log_stmt->execute([$user_id, $action]);
+
     } elseif (empty($id)) {
         if (empty($name) || empty($email) || empty($password) || empty($password_confirm)) {
             $error_message = "All fields are required.";
@@ -85,7 +123,6 @@ if (isset($_POST['signup'])) {
                 $stmt_insert->execute();
                 $staffs = $conn->query($staff_sql)->fetchAll();
 
-                $user_id = $_SESSION['id'];
                 $success_message = "Registration successful!";
                 $action = "Administrator Created an Account.";
                 $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";

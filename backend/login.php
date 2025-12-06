@@ -39,15 +39,13 @@ if (isset($_POST['login'])) {
                     $log_stmt = $conn->prepare($log_sql);
                     
                     if ($user['roles'] === "staff") {
-                        $log_stmt->execute([$_SESSION['id'], "Staff ". $_SESSION['name'] . " has logged in."]);
+                        $log_stmt->execute([$_SESSION['id'], "Staff ". $_SESSION['name'] . " logged in."]);
                         header("Location: staff/sales.php");
                         exit();
                     } elseif ($user['roles'] === "admin") {
-                        $log_stmt->execute([$_SESSION['id'], "Administrator ". $_SESSION['name'] . " has logged in."]);
+                        $log_stmt->execute([$_SESSION['id'], "Administrator ". $_SESSION['name'] . " logged in."]);
                         header("Location: admin/admin.php");
                         exit();
-                    } else {
-                        $success_message = "Login successful! Welcome back, " . htmlspecialchars($user['username']) . ".";
                     }
 
                 } else {
