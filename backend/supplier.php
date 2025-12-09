@@ -36,6 +36,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_supp
     $sql = "INSERT INTO suppliers (supplier_name, phone) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$name, $phone]);
+    
+    $suppliers = $conn->query($suppliers_sql)->fetchAll();
 
     $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
     $log_stmt = $conn->prepare($log_sql);

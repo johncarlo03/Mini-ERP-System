@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') == 'delete
     $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
     $log_stmt = $conn->prepare($log_sql);
     $log_stmt->execute([$user_id, $action]);
-    header("Location: ../user/admin/inventory_management.php");
+    header("Location: ../user/admin/inventory_management.php?deleted=1");
     exit;
     } catch (PDOException $e) {
         die("Delete failed: " . $e->getMessage());
@@ -56,7 +56,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') == 'delete
     $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
     $log_stmt = $conn->prepare($log_sql);
     $log_stmt->execute([$user_id, $action]);
-    header("Location: ../user/admin/staff_creation.php");
+    
+    header("Location: ../user/admin/staff_creation.php?deleted=1");
     exit;
     } catch (PDOException $e) {
         die("Delete failed: " . $e->getMessage());

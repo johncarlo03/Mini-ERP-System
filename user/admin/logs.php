@@ -9,11 +9,13 @@ include "../../backend/audit.php";
     <title>Document</title>
     <link rel="stylesheet" href="../../css/admin.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../../script/sidebar.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<body> 
+    <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
-    <div class="ml-64 p-10">
+    <div class="ml-64 p-10 <?= $initial_margin_class ?>">
 
     <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold text-gray-800">Logs</h1>
@@ -35,7 +37,7 @@ include "../../backend/audit.php";
 
         <optgroup label="Staff Management">
             <option value="created an account" <?php if ($selected_action === 'created an account') echo 'selected'; ?>>Create User</option>
-            <option value="updated an account" <?php if ($selected_action === 'updated an account') echo 'selected'; ?>>Update User</option>
+            <option value="updated user" <?php if ($selected_action === 'updated user') echo 'selected'; ?>>Update User</option>
             <option value="deleted user" <?php if ($selected_action === 'deleted user') echo 'selected'; ?>>Delete User</option>
         </optgroup>
 

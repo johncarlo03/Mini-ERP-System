@@ -1,5 +1,11 @@
 <?php
 include "../../backend/inventory.php";
+
+if (!isset($_SESSION['id'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,15 +14,17 @@ include "../../backend/inventory.php";
     <meta charset="UTF-8">
     <title>Mini ERP - Inventory Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../../script/inventory.js"></script>
+    <script src="../../script/sidebar.js" defer></script>
     <link rel="stylesheet" href="../../css/admin.css">
 </head>
 
 <body class="bg-gray-100">
-
+    <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
 
-    <div class="ml-64 p-10">
+    <div class="ml-64 p-10 <?= $initial_margin_class ?>">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">Inventory Management</h1>
 
         <?php if (!empty($message)): ?>
@@ -33,14 +41,16 @@ include "../../backend/inventory.php";
                     class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition duration-200">
                     Cancel Edit / Create New
                 </button>
+                <button 
+                    type="button" id="deleteBtn" hidden
+                    onclick="confirmDelete(document.getElementById('delete_product_id').value)" 
+                    class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-200">
+                    Delete Item
+                </button>
 
-                <form action="../../backend/delete_item.php" method="POST">
+                <form action="../../backend/delete_item.php" method="POST" id="deleteForm">
                     <input type="hidden" name="action" value="delete_item">
                     <input type="hidden" id="delete_product_id" name="delete_id">
-                    <button type="submit" id="deleteBtn" hidden
-                    class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-200">
-                        Delete Item
-                    </button>
                 </form>
             </div>
             <form method="POST" action="inventory_management.php" class="space-y-4">
@@ -52,7 +62,11 @@ include "../../backend/inventory.php";
                             class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
                             required>
                     </div>
-
+                    <div>
+                        <input type="number" id="item_price" name="item_price" placeholder="Price" step="0.01"
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                            required>
+                    </div>
                     <div>
                         <input type="number" id="qty" name="qty" min="0" placeholder="Initial Quantity"
                             class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -88,6 +102,7 @@ include "../../backend/inventory.php";
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
@@ -97,23 +112,26 @@ include "../../backend/inventory.php";
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['item_name']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['description']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['qty']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['price']) ?></td>
                                 <td class="px-6 text-center py-4 whitespace-nowrap text-sm font-medium">
                                     <!-- Edit Button -->
                                     <button onclick="fillForm(
                                         <?= $item['id'] ?>,
                                         '<?= htmlspecialchars($item['item_name']) ?>',
                                         '<?= htmlspecialchars($item['description']) ?>',
+                                        '<?= htmlspecialchars($item['price']) ?>',
                                         <?= $item['qty'] ?>
                                     )"
-                                        class="text-indigo-600 hover:text-indigo-900 font-semibold transition duration-150">
+                                        class="text-white bg-blue-500 hover:bg-blue-600 font-semibold py-1 px-3 shadow-md hover:shadow-lg rounded text-xs transition">
                                         Edit
                                     </button>
 
-                                    <form action="../../backend/delete_item.php" method="POST" style="display:inline-block;  margin-left:5px;" class="text-red-600 hover:text-red-900 font-semibold transition duration-150">
-                                        <input type="hidden" name="action" value="delete_item">
-                                        <input type="hidden" value="<?= $item['id'] ?>" name="delete_id">
-                                        <button type="submit">Delete</button>
-                                    </form>
+                                    <button 
+                                        onclick="confirmDelete(<?= $item['id'] ?>)" 
+                                        type="button"
+                                        class="text-white bg-red-500 hover:bg-red-700 font-semibold py-1 px-3 rounded text-xs transition ml-2">
+                                        Delete
+                                    </button>
 
                                 </td>
                             </tr>

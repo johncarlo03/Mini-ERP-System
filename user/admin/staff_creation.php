@@ -1,6 +1,5 @@
 <?php
 include "../../backend/create_staff.php";
-// Assuming $staffs, $error_message, and $success_message are available here
 ?>
 
 <!DOCTYPE html>
@@ -11,6 +10,8 @@ include "../../backend/create_staff.php";
     <title>Create Staff Account</title>
     <link rel="stylesheet" href="../../css/admin.css">
     <script src="../../script/staff.js"></script>
+    <script src="../../script/sidebar.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -19,9 +20,10 @@ include "../../backend/create_staff.php";
     </style>
 </head>
 <body>
+    <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
     
-    <div class="ml-64 p-10">
+    <div class="ml-64 p-10 <?= $initial_margin_class ?>">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">Staff Management</h1>
         
         <div class="bg-white p-8 rounded-lg shadow-xl w-full mb-8"> 
@@ -39,7 +41,7 @@ include "../../backend/create_staff.php";
                 
                 <button 
                     id="deleteBtn" 
-                    onclick="document.getElementById('deleteForm').submit()" 
+                    onclick="confirmDelete(document.getElementById('delete_user_id').value)" 
                     hidden
                     type="button"
                     class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-200"
@@ -166,14 +168,14 @@ include "../../backend/create_staff.php";
                                             '<?= htmlspecialchars($staff['email']) ?>',
                                             '<?= htmlspecialchars($staff['roles']) ?>'
                                         )"
-                                        class="text-indigo-600 hover:text-indigo-900 font-semibold transition duration-150">
-                                        Edit
+                                       class="text-white bg-blue-500 hover:bg-blue-600 font-semibold py-1 px-3 rounded text-xs transition">Edit
                                     </button>
-                            <form action="../../backend/delete_item.php" method="POST" style="display:inline-block;  margin-left:5px;" class="text-red-600 hover:text-red-900 font-semibold transition duration-150">
-                                <input type="hidden" name="action" value="delete_user">
-                                <input type="hidden" name="delete_user_id" value="<?= $staff['id'] ?>">
-                                <button type="submit" id="deleteBtn">Delete</button>
-                            </form>
+                            <button 
+                                onclick="confirmDelete(<?= $staff['id'] ?>)" 
+                                type="button"
+                                class="text-white bg-red-500 hover:bg-red-700 font-semibold py-1 px-3 rounded text-xs transition ml-2">
+                                Delete
+                            </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
