@@ -114,6 +114,7 @@ body {
 }
 .sidebar .active {
     background-color: #3f5391;
+    font-weight: bold;
 }
 .sidebar .indicator {
     color: white;

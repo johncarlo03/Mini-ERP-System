@@ -2,6 +2,7 @@
 require '../../db.php';
 
 $message = '';
+$upload_dir = '../../images/products/';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = isset($_POST["id"]) ? trim($_POST["id"]) : '';
@@ -11,21 +12,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $price = (float)$_POST['item_price'];
     $user_id = $_SESSION['id'];
 
-    
+    $final_image_path = null;
+    $existing_image_path = isset($_POST['existing_image_path']) ? $_POST['existing_image_path'] : null;
+
+    if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+        
+        $file_tmp_name = $_FILES['product_image']['tmp_name'];
+        $file_name = basename($_FILES['product_image']['name']);
+        
+        // **WARNING: NO SANITIZATION OR UNIQUE RENAMING HERE**
+        $destination = $upload_dir . $file_name;
+        
+        if (move_uploaded_file($file_tmp_name, $destination)) {
+            $final_image_path = $destination; 
+        } 
+    } else {
+        // If no new file was uploaded, retain the existing path
+        $final_image_path = $existing_image_path;
+    }
+
     if (empty($item_name) || $qty < 0) {
         $message = '<div>Error: Item Name is required and Quantity must be 0 or more.</div>';
     } elseif(!empty($id)){
 
-        $item_edit = "SELECT item_name, description, qty, price FROM inventory WHERE id = ?";
+        $item_edit = "SELECT item_name, description, qty, price, image_path FROM inventory WHERE id = ?";
         $item_edit_stmt = $conn->prepare($item_edit);
         $item_edit_stmt->execute([$id]);
         $edited_item = $item_edit_stmt->fetch(PDO::FETCH_ASSOC);
 
-        $edit_sql = "UPDATE inventory SET item_name = ?, qty = ?, description = ?, price = ? WHERE id = ?";
+        $edit_sql = "UPDATE inventory SET item_name = ?, qty = ?, description = ?, price = ?, image_path = ? WHERE id = ?";
         $edit_stmt = $conn->prepare($edit_sql);
-        $edit_stmt->execute([$item_name, $qty, $description, $price, $id]);
+        $edit_stmt->execute([$item_name, $qty, $description, $price, $final_image_path, $id]);
 
         $action_logs = [];
+        
+        if($final_image_path != $edited_item['image_path']){
+             $action_logs[] = "$item_name image path updated";
+        }
+        
         if($edited_item['item_name'] !== $item_name){
             $action_logs[] = "Item name changed to {$item_name} ";
         }
@@ -60,9 +84,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if($count > 0){
                 $message = '<div>Error: Item <b>"' . htmlspecialchars($item_name) . '"</b> already exists in inventory.</div>';
             } else {
-            $sql = "INSERT INTO inventory (item_name, description, qty, price) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO inventory (item_name, description, qty, price, image_path) VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$item_name, $description, $qty, $price]);
+            $stmt->execute([$item_name, $description, $qty, $price, $final_image_path]);
 
             $message = '<div>Item <b>"' . htmlspecialchars($item_name) . '"</b> added successfully!</div>';
 
@@ -79,11 +103,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// ====================================================================
-// 3. FETCH ALL INVENTORY ITEMS (VIEW STOCK LEVELS)
-// ====================================================================
 try {
-    $sql = "SELECT id, item_name, description, qty, price FROM inventory ORDER BY item_name ASC";
+    $sql = "SELECT id, item_name, description, qty, price, image_path FROM inventory ORDER BY item_name ASC";
     $stmt = $conn->query($sql);
     $items = $stmt->fetchAll();
 } catch (PDOException $e) {

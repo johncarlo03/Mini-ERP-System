@@ -75,14 +75,14 @@ include "../../backend/audit.php";
         <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
             
             <?php if ($current_page > 1): ?>
-                <a href="?page=<?php echo $current_page - 1; ?>" 
+                <a href="?page=<?php echo $current_page - 1 . $filter_param; ?>" 
                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-l-md text-gray-700 bg-white hover:bg-gray-50">
                     Previous
                 </a>
             <?php endif; ?>
 
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <a href="?page=<?php echo $i; ?>" 
+                <a href="?page=<?php echo $i . $filter_param;  ?>" 
                    class="<?php echo ($i == $current_page) ? 'bg-indigo-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'; ?> 
                           relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium">
                     <?php echo $i; ?>
@@ -90,7 +90,7 @@ include "../../backend/audit.php";
             <?php endfor; ?>
 
             <?php if ($current_page < $total_pages): ?>
-                <a href="?page=<?php echo $current_page + 1; ?>" 
+                <a href="?page=<?php echo $current_page + 1 . $filter_param;?>" 
                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-white hover:bg-gray-50">
                     Next
                 </a>

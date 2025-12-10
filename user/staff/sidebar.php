@@ -9,16 +9,12 @@
     <div class="flex justify-center items-center p-4"></div>
 
     <div class="flex items-center mb-4 p-2">
-        <span class="text-xl font-bold whitespace-nowrap">ADMIN</span>
+        <span class="text-xl font-bold whitespace-nowrap">STAFF</span>
     </div>
 
-    <span class="indicator">Reports</span>
+    <span class="indicator">SALES</span>
 
-    <a href="admin.php" class="<?= $activePage == 'admin.php' ? 'active' : '' ?>">Dashboard</a>
-    <a href="staff_creation.php" class="<?= $activePage == 'staff_creation.php' ? 'active' : '' ?>">Accounts</a>
-    <a href="inventory_management.php" class="<?= $activePage == 'inventory_management.php' ? 'active' : '' ?>">Inventory</a>
-    <a href="logs.php" class="<?= $activePage == 'logs.php' ? 'active' : '' ?>">Audit Logs</a>
-    <a href="supplier.php" class="<?= $activePage == 'supplier.php' ? 'active' : '' ?>">Supplier</a>
+    <a href="sales.php" class="<?= $activePage == 'sales.php' ? 'active' : '' ?>">Sales</a>
 
     <form action="../../backend/logout.php" method="POST" class="mt-auto p-4">
         <button class="w-full bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full transition">

@@ -55,5 +55,9 @@ $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $logs = $stmt->fetchAll();
 
-
+$filter_param = '';
+if (!empty($selected_action)) {
+    // Note the ampersand (&) is used here because the 'page' number is the first parameter (?)
+    $filter_param = "&action=" . urlencode($selected_action);
+}
 ?>

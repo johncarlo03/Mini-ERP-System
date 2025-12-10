@@ -53,7 +53,7 @@ if (!isset($_SESSION['id'])) {
                     <input type="hidden" id="delete_product_id" name="delete_id">
                 </form>
             </div>
-            <form method="POST" action="inventory_management.php" class="space-y-4">
+            <form method="POST" action="inventory_management.php" class="space-y-4" enctype="multipart/form-data">
                 <input type="hidden" id="product_id" name="id">
 
                 <div class="grid grid-cols-2 gap-6">
@@ -71,6 +71,18 @@ if (!isset($_SESSION['id'])) {
                         <input type="number" id="qty" name="qty" min="0" placeholder="Initial Quantity"
                             class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
                             required>
+                    </div>
+
+                    <div>
+                        <input type="file" id="product_image_upload" name="product_image" accept="image/*" 
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <input type="hidden" id="existing_image_path" name="existing_image_path">
+
+                    <div id="image_preview_container" class="mt-2" style="display: none;">
+                        <p class="text-sm font-medium text-gray-700">Current Image:</p>
+                        <img id="current_image_preview" src="" alt="Current Product Image" class="w-20 h-20 object-cover rounded border">
                     </div>
                 </div>
 
@@ -99,6 +111,7 @@ if (!isset($_SESSION['id'])) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
@@ -109,6 +122,9 @@ if (!isset($_SESSION['id'])) {
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($items as $item): ?>
                             <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <img src="<?= htmlspecialchars($item['image_path']) ?>" alt="<?= htmlspecialchars($item['item_name']) ?>" 
+                                     class="w-12 h-12 object-cover rounded-md border border-gray-200"></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['item_name']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['description']) ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['qty']) ?></td>
@@ -120,6 +136,7 @@ if (!isset($_SESSION['id'])) {
                                         '<?= htmlspecialchars($item['item_name']) ?>',
                                         '<?= htmlspecialchars($item['description']) ?>',
                                         '<?= htmlspecialchars($item['price']) ?>',
+                                        '<?= htmlspecialchars($item['image_path']) ?>',
                                         <?= $item['qty'] ?>
                                     )"
                                         class="text-white bg-blue-500 hover:bg-blue-600 font-semibold py-1 px-3 shadow-md hover:shadow-lg rounded text-xs transition">

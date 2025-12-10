@@ -7,7 +7,7 @@ $message = '';
         $customer_sql = "SELECT id, name FROM customers ORDER BY name ASC";
         $customers = $conn->query($customer_sql)->fetchAll();
 
-        $inventory_sql = "SELECT id, item_name, qty FROM inventory ORDER BY item_name ASC";
+        $inventory_sql = "SELECT id, item_name, qty, price, image_path FROM inventory ORDER BY item_name ASC";
         $items = $conn->query($inventory_sql)->fetchAll();
 
 if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_customer'){
@@ -44,18 +44,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_cust
         } else {
             $conn->beginTransaction();
 
-            $stock_check_sql = "SELECT qty, item_name FROM inventory WHERE id = ?";
+            $stock_check_sql = "SELECT qty, item_name, price FROM inventory WHERE id = ?";
             $stock_stmt = $conn->prepare($stock_check_sql);
             $stock_stmt->execute([$item_id]);
             $item_data = $stock_stmt->fetch();
+            
+            $total_sold = $item_data['price'] * $sold_qty;
 
             if(!$item_data || $item_data['qty'] < $sold_qty){
                 $conn->rollback();
                 $message = '<div style="color: red;">Error: Insufficient stock for ' . htmlspecialchars($item_data['item_name'] ?? 'item') . '. Only ' . ($item_data['qty'] ?? 0) . ' available.</div>';
             } else {
-                $sale_sql = "INSERT INTO sales (customer_id, item_id, qty, date_created) VALUES (?, ?, ?, NOW())";
+                $sale_sql = "INSERT INTO sales (customer_id, item_id, qty, total_amount, date_created) VALUES (?, ?, ?, ?, NOW())";
                 $sale_stmt = $conn->prepare($sale_sql);
-                $sale_stmt->execute([$customer_id, $item_id, $sold_qty]);
+                $sale_stmt->execute([$customer_id, $item_id, $sold_qty, $total_sold]);
 
                 $update_sql = "UPDATE inventory SET qty = qty - ? WHERE id = ?";
                 $update_stmt = $conn->prepare($update_sql);
@@ -64,17 +66,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_cust
                 $conn->commit();
                 $inventory_sql = "SELECT id, item_name, qty FROM inventory ORDER BY item_name ASC";
                 $items = $conn->query($inventory_sql)->fetchAll();
+
+                $customer_sql = "SELECT name FROM customers WHERE id = ?";
+                $stmt_customer = $conn->prepare($customer_sql);
+                $stmt_customer->execute([$customer_id]);
+                $customer_name = $stmt_customer->fetchColumn();
+
                 $message = '<div style="color: green;">Sale recorded successfully! Inventory updated.</div>';
                 $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
                 $log_stmt = $conn->prepare($log_sql);
-                $log_stmt->execute([$user_id, "Sold " . $sold_qty . " pcs of " . $item_data['item_name']]);
+                $log_stmt->execute([$user_id, "Sold " . $sold_qty . " pcs of " . $item_data['item_name']. " to ". $customer_name ]);
             }
 
 
         }
     }
 
-    $recent_sql = "SELECT s.id AS sale_id, c.name AS customer_name, i.item_name, s.qty AS quantity_sold, s.date_created
+    $recent_sql = "SELECT s.id AS sale_id, c.name AS customer_name, i.item_name, s.qty AS quantity_sold, s.date_created, s.total_amount AS total_amount
                    FROM sales s
                    JOIN customers c ON s.customer_id = c.id
                    JOIN inventory i ON s.item_id = i.id
