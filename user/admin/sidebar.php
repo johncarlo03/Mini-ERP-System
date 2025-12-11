@@ -19,7 +19,7 @@ $logged_name = $logged_in_stmt->fetchColumn();
     <div class="flex justify-center items-center p-4"></div>
 
     <div class="flex items-center mb-4 p-2">
-        <img class="rounded-full mr-2 w-14 h-14" src="../../images/profile/placeholder.jpg" alt="">
+        <img class="rounded-full mr-2 w-14 h-14" src="../../images/profile/placeholder.png" alt="">
         <span style="font-size:15px; font-weight:bold;"><?= htmlspecialchars($logged_name) ?></span>
     </div>
 
