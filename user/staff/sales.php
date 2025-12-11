@@ -54,7 +54,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
                             Customer</label>
                         <select id="customer_id" name="customer_id" required
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 bg-white">
-                            <option value="">-- Select Customer --</option>
+                            <option value="">Select Customer</option>
                             <?php foreach ($customers as $customer): ?>
                                 <option value="<?php echo htmlspecialchars($customer['id']); ?>">
                                     <?php echo htmlspecialchars($customer['name']); ?>
@@ -156,7 +156,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <?php echo htmlspecialchars($sale['quantity_sold']); ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo htmlspecialchars($sale['date_created']); ?></td>
+                                    <?php echo htmlspecialchars($sale['sale_date_formatted']); ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">
                                     <?php
                                     // Assuming 'total_price' is available and needs formatting
