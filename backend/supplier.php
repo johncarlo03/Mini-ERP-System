@@ -5,7 +5,7 @@ $message = '';
 $error_message = '';
 
 
-$suppliers_sql = "SELECT id, supplier_name, phone FROM suppliers ORDER BY supplier_name ASC";
+$suppliers_sql = "SELECT id, supplier_name, phone FROM suppliers WHERE is_deleted = 0 ORDER BY supplier_name ASC";
 $suppliers = $conn->query($suppliers_sql)->fetchAll();
 
 $inventory_sql = "SELECT id, item_name FROM inventory ORDER BY item_name ASC";
@@ -37,7 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_sup
         $stmt = $conn->prepare($sql);
         $stmt->execute([$name, $phone]);
 
-        $suppliers = $conn->query($suppliers_sql)->fetchAll();
+        $suppliers = $conn->query($suppliers_sql)->fetchAll(); 
+        $message = '<div style="color: green;">Supplier Added successfully!</div>';
+
 
         $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
         $log_stmt = $conn->prepare($log_sql);
@@ -62,6 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'create_
         $log_stmt = $conn->prepare($log_sql);
         $log_stmt->execute([$user_id, "Created PO for item ID: " . $item_id . " (Qty: " . $po_qty . ")"]);
         $purchase_orders = $conn->query($po_sql)->fetchAll();
+        $message = '<div style="color: green;">Successfully Created a Purchase Order! Order Currently Pending.</div>';
+
     }
 }
 
@@ -98,6 +102,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'receive
         $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
         $log_stmt = $conn->prepare($log_sql);
         $log_stmt->execute([$user_id, "Received PO ID " . $po_id . ", increasing stock."]);
+    }
+}
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_supplier') {
+    $supplier_id = trim($_POST['supplier_id']);
+    $name = trim($_POST['supplier_name']);
+    $phone = trim($_POST['supplier_phone']);
+    $user_id = $_SESSION['id'];
+
+    if (!empty($name) && ($_POST['supplier_action'] ?? '') == 'edit') {
+        $sql = "UPDATE suppliers SET supplier_name = ?, phone = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$name, $phone, $supplier_id]);
+
+        $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+        $log_stmt = $conn->prepare($log_sql);
+        $log_stmt->execute([$user_id, "Supplier: " . $name . " is updated."]);
+        $suppliers = $conn->query($suppliers_sql)->fetchAll();
+        $message = '<div style="color: green;">Supplier updated successfully!</div>';
+    } elseif (($_POST['supplier_action'] ?? '') == 'delete') {
+        $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+        $log_stmt = $conn->prepare($log_sql);
+        $log_stmt->execute([$user_id, "Supplier: " . $name . " was deleted."]);
+
+        $err_message = '<div style="color: red;">Supplier Deleted successfully!</div>';
+
+        $sql = "UPDATE suppliers SET is_deleted = 1 WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$supplier_id]);
+        $suppliers = $conn->query($suppliers_sql)->fetchAll();
     }
 }
 ?>

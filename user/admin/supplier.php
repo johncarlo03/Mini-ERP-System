@@ -1,5 +1,6 @@
 <?php
 include "../../backend/supplier.php";
+
 if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     header("Location: ../login.php");
     exit();
@@ -18,6 +19,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../../script/sidebar.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../script/supplier.js" defer></script>
 </head>
 
 <body class="bg-gray-100">
@@ -32,6 +34,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                 <?= $error_message ?>
             </div>
         <?php endif; ?>
+        
         <?php if (!empty($message)): ?>
             <div class="p-3 mb-4 rounded bg-green-100 text-green-700 border border-green-300">
                 <?= $message ?>
@@ -41,7 +44,15 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 
             <div class="bg-white p-6 rounded-xl shadow-lg border">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Add New Supplier</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-700">Add New Supplier</h2>
+
+                    <button type="button" onclick="openEditSupplierModal()"
+                        class="bg-green-500 text-white font-semibold py-1 px-3 rounded-lg hover:bg-green-600 transition shadow-sm text-sm">
+                        Edit Existing supplier
+                    </button>
+                </div>
+                
                 <form method="POST" action="supplier.php" class="space-y-4">
                     <input type="hidden" name="action" value="add_supplier">
 
@@ -165,6 +176,67 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
             </div>
         <?php endif; ?>
     </div>
+
+    <div id="supplierEditModal"
+        class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
+                <h3 class="text-2xl font-bold text-gray-800">Edit Supplier Details</h3>
+                <button onclick="closeEditSupplierModal()"
+                    class="text-gray-500 hover:text-gray-900 text-xl font-bold">&times;</button>
+            </div>
+
+            <div class="p-6 space-y-4">
+
+                <div>
+                    <label for="edit_supplier_select" class="block text-sm font-medium text-gray-700 mb-1">Select
+                        Supplier to Edit</label>
+                    <select id="edit_supplier_select" onchange="loadSupplierDetails(this.value)"
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 bg-white">
+                        <option value="">Select Supplier</option>
+                        <?php foreach ($suppliers as $supplier): ?>
+                            <option value="<?php echo htmlspecialchars($supplier['id']); ?>"
+                                data-name="<?php echo htmlspecialchars($supplier['supplier_name']); ?>"
+                                data-phone="<?php echo htmlspecialchars($supplier['phone']); ?>">
+                                <?php echo htmlspecialchars($supplier['supplier_name']) . " (" . htmlspecialchars($supplier['phone']) . ")"; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <form id="supplier_edit_form" method="POST" action="supplier.php"
+                    class="space-y-4 border-t pt-4 mt-4 hidden">
+                    <input type="hidden" name="action" value="edit_supplier">
+                    <input type="hidden" id="edit_supplier_id" name="supplier_id">
+
+                    <div>
+                        <label for="edit_supplier_name"
+                            class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input type="text" id="edit_supplier_name" name="supplier_name" required
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="edit_supplier_phone"
+                            class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                        <input type="text" id="edit_supplier_phone" name="supplier_phone"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <button type="submit" value="edit" name="supplier_action"
+                        class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md">
+                        Save Changes
+                    </button>
+                    <button type="submit" value="delete" name="supplier_action"
+                        class="w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition duration-200 shadow-md">
+                        Delete supplier
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>
