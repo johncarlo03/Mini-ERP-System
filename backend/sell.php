@@ -107,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_cu
     }
 }
 
-$recent_sql = "SELECT s.id AS sale_id, c.name AS customer_name, i.item_name, s.qty AS quantity_sold, s.date_created, s.total_amount AS total_amount
+$recent_sql = "SELECT s.id AS sale_id, c.name AS customer_name, i.item_name, s.qty AS quantity_sold, DATE_FORMAT(s.date_created, '%b %e, %Y') AS sale_date_formatted, s.total_amount AS total_amount
                    FROM sales s
                    JOIN customers c ON s.customer_id = c.id
                    JOIN inventory i ON s.item_id = i.id
