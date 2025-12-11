@@ -1,9 +1,14 @@
 <?php
 include "../../backend/create_staff.php";
+if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
+    header("Location: ../login.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,84 +24,50 @@ include "../../backend/create_staff.php";
         }
     </style>
 </head>
+
 <body>
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
-    
+
     <div class="ml-64 p-10 <?= $initial_margin_class ?>">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">Staff Management</h1>
-        
-        <div class="bg-white p-8 rounded-lg shadow-xl w-full mb-8"> 
-            
+
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full mb-8">
+
             <div class="flex justify-end space-x-3 mb-6">
-                <button 
-                    id="resetBtn" 
-                    onclick="resetForm()" 
-                    hidden
-                    type="button"
-                    class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition duration-200"
-                >
+                <button id="resetBtn" onclick="resetForm()" hidden type="button"
+                    class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition duration-200">
                     Cancel Edit / Create New
                 </button>
-                
-                <button 
-                    id="deleteBtn" 
-                    onclick="confirmDelete(document.getElementById('delete_user_id').value)" 
-                    hidden
+
+                <button id="deleteBtn" onclick="confirmDelete(document.getElementById('delete_user_id').value)" hidden
                     type="button"
-                    class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-200"
-                >
+                    class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-200">
                     Delete Staff
                 </button>
             </div>
-            
+
             <form method="POST" action="" class="space-y-6">
                 <input type="hidden" id="id" name="id">
-                <input type="hidden"> <div class="flex space-x-4">
-                    <input 
-                        type="text" 
-                        id="name"
-                        name="name" 
-                        placeholder="Full Name"
-                        required
-                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150"
-                    >
-                    <input 
-                        type="email" 
-                        name="email"
-                        id="email"
-                        placeholder="Email Address"
-                        required
-                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150"
-                    >
+                <input type="hidden">
+                <div class="flex space-x-4">
+                    <input type="text" id="name" name="name" placeholder="Full Name" required
+                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150">
+                    <input type="email" name="email" id="email" placeholder="Email Address" required
+                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150">
                 </div>
 
                 <div class="flex space-x-4">
-                    <input 
-                        type="password" 
-                        name="password" 
-                        placeholder="Password (Leave blank when editing)"
-                        id="pw"
+                    <input type="password" name="password" placeholder="Password (Leave blank when editing)" id="pw"
                         required
-                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150"
-                    >
-                    <input 
-                        type="password" 
-                        name="password_confirm" 
-                        placeholder="Confirm Password"
-                        id="rpw"
-                        required
-                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150"
-                    >
+                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150">
+                    <input type="password" name="password_confirm" placeholder="Confirm Password" id="rpw" required
+                        class="w-1/2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150">
                 </div>
-                
+
                 <div class="flex space-x-4">
-                    <select 
-                        name="role" 
-                        id="role" 
-                        required
-                        class="w-1/2 p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150"
-                    >
+                    <select name="role" id="role" required
+                        class="w-1/2 p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150">
                         <option value="">Select Role</option>
                         <option value="staff">Staff</option>
                         <option value="admin">Admin</option>
@@ -104,12 +75,9 @@ include "../../backend/create_staff.php";
                     <div class="w-1/2"></div>
                 </div>
 
-                <button 
-                    type="submit" 
-                    name="signup"
-                    id="submitBtn"
-                    class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                >Create Staff Account
+                <button type="submit" name="signup" id="submitBtn"
+                    class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300">Create
+                    Staff Account
                 </button>
 
 
@@ -140,42 +108,48 @@ include "../../backend/create_staff.php";
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User
+                            ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role
+                        </th>
+                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Action</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <?php if (!empty($staffs)): ?>
                         <?php foreach ($staffs as $staff): ?>
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo htmlspecialchars($staff['id']); ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($staff['name']); ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?php echo htmlspecialchars($staff['email']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <?php echo htmlspecialchars($staff['id']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php echo htmlspecialchars($staff['name']); ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php echo htmlspecialchars($staff['email']); ?></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                         <?php echo ($staff['roles'] == 'admin') ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800'; ?>">
                                         <?php echo htmlspecialchars(ucfirst($staff['roles'])); ?>
                                     </span>
                                 </td>
                                 <td class="px-6 text-center py-4 whitespace-nowrap text-sm font-medium">
-                                    <button 
-                                        onclick="fillForm(
+                                    <button onclick="fillForm(
                                             <?= $staff['id'] ?>,
                                             '<?= htmlspecialchars($staff['name']) ?>',
                                             '<?= htmlspecialchars($staff['email']) ?>',
                                             '<?= htmlspecialchars($staff['roles']) ?>'
                                         )"
-                                       class="text-white bg-blue-500 hover:bg-blue-600 font-semibold py-1 px-3 rounded text-xs transition">Edit
+                                        class="text-white bg-blue-500 hover:bg-blue-600 font-semibold py-1 px-3 rounded text-xs transition">Edit
                                     </button>
-                            <button 
-                                onclick="confirmDelete(<?= $staff['id'] ?>)" 
-                                type="button"
-                                class="text-white bg-red-500 hover:bg-red-700 font-semibold py-1 px-3 rounded text-xs transition ml-2">
-                                Delete
-                            </button>
+                                    <button onclick="confirmDelete(<?= $staff['id'] ?>)" type="button"
+                                        class="text-white bg-red-500 hover:bg-red-700 font-semibold py-1 px-3 rounded text-xs transition ml-2">
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -191,4 +165,5 @@ include "../../backend/create_staff.php";
 
 
 </body>
+
 </html>

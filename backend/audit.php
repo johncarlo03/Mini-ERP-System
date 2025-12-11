@@ -1,10 +1,10 @@
 <?php
 
-include "../../db.php"; 
+include "../../db.php";
 
 $records_per_page = 11;
 
-$current_page = (isset($_GET['page']) && is_numeric($_GET['page'])) ? (int)$_GET['page'] : 1;
+$current_page = (isset($_GET['page']) && is_numeric($_GET['page'])) ? (int) $_GET['page'] : 1;
 $selected_action = isset($_GET['action']) ? $_GET['action'] : '';
 
 $where = '';
@@ -34,11 +34,12 @@ if ($current_page > $total_pages) {
 }
 
 $offset = ($current_page - 1) * $records_per_page;
-if ($offset < 0) $offset = 0;
+if ($offset < 0)
+    $offset = 0;
 
 $audit_logs_query = "
-    SELECT a.id, a.action, u.name, a.date_time FROM 
-    audit_logs a 
+    SELECT a.id, a.action, u.name, a.date_time, u.roles FROM 
+    audit_logs a
     JOIN USERS u ON a.user_id = u.id
     " . $where . "
     ORDER BY a.date_time DESC

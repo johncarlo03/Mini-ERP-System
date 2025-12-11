@@ -1,7 +1,6 @@
 <?php
 include "../../backend/inventory.php";
-
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     header("Location: ../login.php");
     exit();
 }
@@ -35,15 +34,14 @@ if (!isset($_SESSION['id'])) {
 
         <div class="bg-white p-6 rounded-xl shadow border mb-10">
             <h2 class="text-xl font-semibold mb-4">Add New Inventory Item</h2>
-            
+
             <div class="flex justify-end space-x-3 mb-6">
                 <button id="resetBtn" onclick="resetForm()" hidden
                     class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition duration-200">
                     Cancel Edit / Create New
                 </button>
-                <button 
-                    type="button" id="deleteBtn" hidden
-                    onclick="confirmDelete(document.getElementById('delete_product_id').value)" 
+                <button type="button" id="deleteBtn" hidden
+                    onclick="confirmDelete(document.getElementById('delete_product_id').value)"
                     class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-200">
                     Delete Item
                 </button>
@@ -59,22 +57,19 @@ if (!isset($_SESSION['id'])) {
                 <div class="grid grid-cols-2 gap-6">
                     <div>
                         <input type="text" id="item_name" name="item_name" placeholder="Item Name"
-                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                            required>
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
                     </div>
                     <div>
                         <input type="number" id="item_price" name="item_price" placeholder="Price" step="0.01"
-                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                            required>
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
                     </div>
                     <div>
                         <input type="number" id="qty" name="qty" min="0" placeholder="Initial Quantity"
-                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500"
-                            required>
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500" required>
                     </div>
 
                     <div>
-                        <input type="file" id="product_image_upload" name="product_image" accept="image/*" 
+                        <input type="file" id="product_image_upload" name="product_image" accept="image/*"
                             class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500">
                     </div>
 
@@ -82,7 +77,8 @@ if (!isset($_SESSION['id'])) {
 
                     <div id="image_preview_container" class="mt-2" style="display: none;">
                         <p class="text-sm font-medium text-gray-700">Current Image:</p>
-                        <img id="current_image_preview" src="" alt="Current Product Image" class="w-20 h-20 object-cover rounded border">
+                        <img id="current_image_preview" src="" alt="Current Product Image"
+                            class="w-20 h-20 object-cover rounded border">
                     </div>
                 </div>
 
@@ -92,7 +88,8 @@ if (!isset($_SESSION['id'])) {
                 </div>
 
                 <button type="submit" id="submitBtn"
-                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Add Item to Stock</button>
+                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Add Item to
+                    Stock</button>
             </form>
         </div>
 
@@ -111,24 +108,36 @@ if (!isset($_SESSION['id'])) {
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item
+                                Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Description</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price
+                            </th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($items as $item): ?>
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <img src="<?= htmlspecialchars($item['image_path']) ?>" alt="<?= htmlspecialchars($item['item_name']) ?>" 
-                                     class="w-12 h-12 object-cover rounded-md border border-gray-200"></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['item_name']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['description']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['qty']) ?></td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= htmlspecialchars($item['price']) ?></td>
+                                    <img src="<?= htmlspecialchars($item['image_path']) ?>"
+                                        alt="<?= htmlspecialchars($item['item_name']) ?>"
+                                        class="w-12 h-12 object-cover rounded-md border border-gray-200">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?= htmlspecialchars($item['item_name']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?= htmlspecialchars($item['description']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?= htmlspecialchars($item['qty']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?= htmlspecialchars($item['price']) ?></td>
                                 <td class="px-6 text-center py-4 whitespace-nowrap text-sm font-medium">
                                     <!-- Edit Button -->
                                     <button onclick="fillForm(
@@ -143,9 +152,7 @@ if (!isset($_SESSION['id'])) {
                                         Edit
                                     </button>
 
-                                    <button 
-                                        onclick="confirmDelete(<?= $item['id'] ?>)" 
-                                        type="button"
+                                    <button onclick="confirmDelete(<?= $item['id'] ?>)" type="button"
                                         class="text-white bg-red-500 hover:bg-red-700 font-semibold py-1 px-3 rounded text-xs transition ml-2">
                                         Delete
                                     </button>

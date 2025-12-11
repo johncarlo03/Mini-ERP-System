@@ -1,6 +1,6 @@
 <?php
-include "../../backend/dashboard_data.php"; 
-if (!isset($_SESSION['id'])) {
+include "../../backend/dashboard_data.php";
+if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     header("Location: ../login.php");
     exit();
 }
@@ -8,6 +8,7 @@ if (!isset($_SESSION['id'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +18,7 @@ if (!isset($_SESSION['id'])) {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>ERP Dashboard</title>
 </head>
+
 <body>
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
@@ -27,44 +29,44 @@ if (!isset($_SESSION['id'])) {
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-6">
-    
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-500">
-        <p class="text-sm font-medium text-gray-500">Total Inventory</p>
-        <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_inventory; ?></p>
-    </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
-        <p class="text-sm font-medium text-gray-500">Low Stock Items</p>
-        <p class="text-3xl font-bold text-red-600 mt-1"><?php echo $low_stock_items; ?></p>
-    </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                <p class="text-sm font-medium text-gray-500">Total Inventory</p>
+                <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_inventory; ?></p>
+            </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
-        <p class="text-sm font-medium text-gray-500">Pending Orders</p>
-        <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $pending_orders; ?></p>
-    </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
+                <p class="text-sm font-medium text-gray-500">Low Stock Items</p>
+                <p class="text-3xl font-bold text-red-600 mt-1"><?php echo $low_stock_items; ?></p>
+            </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
-        <p class="text-sm font-medium text-gray-500">Total Staffs</p>
-        <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_staffs; ?></p>
-    </div>
-</div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-500">
+                <p class="text-sm font-medium text-gray-500">Pending Orders</p>
+                <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $pending_orders; ?></p>
+            </div>
 
-<h2 class="text-2xl font-bold mb-4 text-gray-800">Sales Overview</h2>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
-    
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-600">
-        <p class="text-sm font-medium text-gray-500">Total Sales Orders</p>
-        <p class="text-3xl font-bold text-yellow-700 mt-1"><?php echo $total_sales; ?></p>
-    </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+                <p class="text-sm font-medium text-gray-500">Total Staffs</p>
+                <p class="text-3xl font-bold text-gray-900 mt-1"><?php echo $total_staffs; ?></p>
+            </div>
+        </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-600">
-        <p class="text-sm font-medium text-gray-500">Total Revenue</p>
-        <p class="text-3xl font-bold text-green-700 mt-1"><?php echo $total_revenue_formatted; ?></p>
-    </div>
-</div>
-        
+        <h2 class="text-2xl font-bold mb-4 text-gray-800">Sales Overview</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-600">
+                <p class="text-sm font-medium text-gray-500">Total Sales Orders</p>
+                <p class="text-3xl font-bold text-yellow-700 mt-1"><?php echo $total_sales; ?></p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-600">
+                <p class="text-sm font-medium text-gray-500">Total Revenue</p>
+                <p class="text-3xl font-bold text-green-700 mt-1"><?php echo $total_revenue_formatted; ?></p>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
+
             <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg">
                 <h2 class="text-xl font-semibold mb-4 text-gray-800">Inventory Movement (Last 6 Months)</h2>
                 <div class="h-80">
@@ -73,45 +75,46 @@ if (!isset($_SESSION['id'])) {
             </div>
 
             <div class="bg-white p-6 rounded-xl shadow-lg">
-    <h2 class="text-xl font-semibold mb-4 text-gray-800">🔔 Recent System Activity</h2>
-    <ul class="space-y-4">
-        <?php foreach ($recent_logs as $log): ?>
-            <li class="flex justify-between items-start text-sm border-b pb-2 last:border-b-0">
-                <div class="flex min-w-0"> 
-                    
-                    <span class="font-medium text-gray-800 w-24 mr-2 flex-shrink-0">
-                        <?php echo htmlspecialchars($log['user']); ?>
-                    </span>
-                    
-                    <span class="text-gray-600 flex-grow-1">
-                        <?php echo htmlspecialchars($log['action']); ?>
-                    </span>
-                </div>
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">🔔 Recent System Activity</h2>
+                <ul class="space-y-4">
+                    <?php foreach ($recent_logs as $log): ?>
+                        <li class="flex justify-between items-start text-sm border-b pb-2 last:border-b-0">
+                            <div class="flex min-w-0">
 
-                <span class="text-xs text-gray-400 ml-4 flex-shrink-0">
-                    <?php echo htmlspecialchars($log['time']); ?>
-                </span>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-    <a href="logs.php" class="block mt-4 text-indigo-600 hover:text-indigo-800 text-sm font-medium">View All Logs &rarr;</a>
-</div>
+                                <span class="font-medium text-gray-800 w-24 mr-2 flex-shrink-0">
+                                    <?php echo htmlspecialchars($log['user']); ?>
+                                </span>
+
+                                <span class="text-gray-600 flex-grow-1">
+                                    <?php echo htmlspecialchars($log['action']); ?>
+                                </span>
+                            </div>
+
+                            <span class="text-xs text-gray-400 ml-4 flex-shrink-0">
+                                <?php echo htmlspecialchars($log['time']); ?>
+                            </span>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <a href="logs.php" class="block mt-4 text-indigo-600 hover:text-indigo-800 text-sm font-medium">View All
+                    Logs &rarr;</a>
+            </div>
 
         </div>
 
     </div>
-    
+
     <script>
-        
+
         const ctx = document.getElementById('inventoryChart').getContext('2d');
         const inventoryChart = new Chart(ctx, {
             type: 'line',
             data: {
                 // PHP passes the data to JavaScript
-                labels: <?php echo json_encode($month_labels); ?>, 
+                labels: <?php echo json_encode($month_labels); ?>,
                 datasets: [{
                     label: 'Items Handled',
-                    data: <?php echo json_encode($monthly_data); ?>, 
+                    data: <?php echo json_encode($monthly_data); ?>,
                     backgroundColor: 'rgba(99, 102, 241, 0.1)', // Indigo-500 light
                     borderColor: 'rgba(99, 102, 241, 1)', // Indigo-500
                     borderWidth: 3,
@@ -137,4 +140,5 @@ if (!isset($_SESSION['id'])) {
         });
     </script>
 </body>
+
 </html>

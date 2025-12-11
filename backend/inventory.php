@@ -8,24 +8,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = isset($_POST["id"]) ? trim($_POST["id"]) : '';
     $item_name = trim($_POST['item_name']);
     $description = trim($_POST['description']);
-    $qty = (int)$_POST['qty'];
-    $price = (float)$_POST['item_price'];
+    $qty = (int) $_POST['qty'];
+    $price = (float) $_POST['item_price'];
     $user_id = $_SESSION['id'];
 
     $final_image_path = null;
     $existing_image_path = isset($_POST['existing_image_path']) ? $_POST['existing_image_path'] : null;
 
     if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
-        
+
         $file_tmp_name = $_FILES['product_image']['tmp_name'];
         $file_name = basename($_FILES['product_image']['name']);
-        
+
         // **WARNING: NO SANITIZATION OR UNIQUE RENAMING HERE**
         $destination = $upload_dir . $file_name;
-        
+
         if (move_uploaded_file($file_tmp_name, $destination)) {
-            $final_image_path = $destination; 
-        } 
+            $final_image_path = $destination;
+        }
     } else {
         // If no new file was uploaded, retain the existing path
         $final_image_path = $existing_image_path;
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($item_name) || $qty < 0) {
         $message = '<div>Error: Item Name is required and Quantity must be 0 or more.</div>';
-    } elseif(!empty($id)){
+    } elseif (!empty($id)) {
 
         $item_edit = "SELECT item_name, description, qty, price, image_path FROM inventory WHERE id = ?";
         $item_edit_stmt = $conn->prepare($item_edit);
@@ -45,30 +45,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $edit_stmt->execute([$item_name, $qty, $description, $price, $final_image_path, $id]);
 
         $action_logs = [];
-        
-        if($final_image_path != $edited_item['image_path']){
-             $action_logs[] = "$item_name image path updated";
+
+        if ($final_image_path != $edited_item['image_path']) {
+            $action_logs[] = "$item_name image path updated";
         }
-        
-        if($edited_item['item_name'] !== $item_name){
+
+        if ($edited_item['item_name'] !== $item_name) {
             $action_logs[] = "Item name changed to {$item_name} ";
         }
 
-        if($edited_item['qty'] != $qty){
+        if ($edited_item['qty'] != $qty) {
             $action_logs[] = "$item_name quantity updated from {$edited_item['qty']} to {$qty} ";
         }
 
-        if($edited_item['price'] != $price){
+        if ($edited_item['price'] != $price) {
             $action_logs[] = "$item_name price updated from {$edited_item['price']} to {$price} ";
         }
-        
+
         $message = '<div>Item <b>"' . htmlspecialchars($item_name) . '"</b> updated successfully!</div>';
         if (empty($action_logs)) {
-        $action = "Item (ID: {$id}) updated, but no logged fields were changed.";
-            } else {
-        // Combine all changes into one string for the log
-        $action = "Inventory Update (ID: {$id}): " . implode("and ", $action_logs);
-    }
+            $action = "Item (ID: {$id}) updated, but no logged fields were changed.";
+        } else {
+
+            $action = "Inventory Update (ID: {$id}): " . implode("and ", $action_logs);
+        }
 
         $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
         $log_stmt = $conn->prepare($log_sql);
@@ -78,25 +78,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $check_sql = "SELECT COUNT(*) FROM inventory WHERE item_name = ?";
             $check_stmt = $conn->prepare($check_sql);
             $check_stmt->execute([$item_name]);
-            
+
             $count = $check_stmt->fetchColumn();
-            
-            if($count > 0){
+
+            if ($count > 0) {
                 $message = '<div>Error: Item <b>"' . htmlspecialchars($item_name) . '"</b> already exists in inventory.</div>';
             } else {
-            $sql = "INSERT INTO inventory (item_name, description, qty, price, image_path) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$item_name, $description, $qty, $price, $final_image_path]);
+                $sql = "INSERT INTO inventory (item_name, description, qty, price, image_path) VALUES (?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute([$item_name, $description, $qty, $price, $final_image_path]);
 
-            $message = '<div>Item <b>"' . htmlspecialchars($item_name) . '"</b> added successfully!</div>';
+                $message = '<div>Item <b>"' . htmlspecialchars($item_name) . '"</b> added successfully!</div>';
 
-            $action = "Added item: " . $item_name . " (Qty: " . $qty . ")";
-            $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
-            $log_stmt = $conn->prepare($log_sql);
-            $log_stmt->execute([$user_id, $action]);
+                $action = "Added item: " . $item_name . " (Qty: " . $qty . ")";
+                $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
+                $log_stmt = $conn->prepare($log_sql);
+                $log_stmt->execute([$user_id, $action]);
 
             }
-            
+
         } catch (PDOException $e) {
             $message = '<div>Database Error: ' . $e->getMessage() . '</div>';
         }

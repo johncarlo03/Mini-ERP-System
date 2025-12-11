@@ -75,12 +75,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (window.location.search.includes("deleted=1")) {
     Swal.fire({
-        icon: "success",
-        title: "Deleted!",
-        text: "The staff account has been successfully removed.",
-        showConfirmButton: false,
-        timer: 1500
+      icon: "success",
+      title: "Deleted!",
+      text: "The staff account has been successfully removed.",
+      showConfirmButton: false,
+      timer: 1500,
     });
-}
-
+  }
 });

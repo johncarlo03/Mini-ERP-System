@@ -7,7 +7,7 @@ $records_per_page = 11;
 // 2. Determine the current page number
 // The 'page' number will be passed via the URL, e.g., logs.php?page=2
 if (isset($_GET['page'])) {
-    $current_page = (int)$_GET['page'];
+    $current_page = (int) $_GET['page'];
 } else {
     $current_page = 1; // Default to page 1
 }
@@ -34,7 +34,8 @@ $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $logs = $stmt->fetchAll();
 
-function categorize_action($action_string) {
+function categorize_action($action_string)
+{
     // Convert to lowercase for case-insensitive checking
     $action = strtolower($action_string);
 

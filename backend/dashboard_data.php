@@ -1,5 +1,5 @@
 <?php
-include "../../db.php"; 
+include "../../db.php";
 
 $stock_sql = "SELECT COUNT(*) FROM inventory";
 $stmt_stock = $conn->query($stock_sql);
@@ -66,7 +66,7 @@ $month_labels = [];
 
 foreach ($chart_results as $row) {
     $month_labels[] = $row['month_label'];
-    $monthly_data[] = (int)$row['actions_count'];
+    $monthly_data[] = (int) $row['actions_count'];
 }
 
 $sales_count_sql = "SELECT COUNT(*) FROM sales";
@@ -78,5 +78,5 @@ $revenue_sql = "SELECT SUM(total_amount) FROM sales";
 $stmt_revenue = $conn->query($revenue_sql);
 $total_revenue = $stmt_revenue->fetchColumn();
 
-$total_revenue_formatted = '₱ ' .number_Format($total_revenue, 2);
+$total_revenue_formatted = '₱ ' . number_Format($total_revenue, 2);
 ?>
