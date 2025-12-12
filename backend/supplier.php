@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_sup
         $stmt = $conn->prepare($sql);
         $stmt->execute([$name, $phone]);
 
-        $suppliers = $conn->query($suppliers_sql)->fetchAll(); 
+        $suppliers = $conn->query($suppliers_sql)->fetchAll();
         $message = '<div style="color: green;">Supplier Added successfully!</div>';
 
 
@@ -53,8 +53,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'create_
     $po_qty = (int) $_POST['qty'];
     $user_id = $_SESSION['id'];
 
+    $check_order = "SELECT COUNT(*) FROM purchase_orders WHERE status = 'Pending'";
+    $order_stmt = $conn->prepare($check_order);
+    $order_stmt->execute();
+    $pending_count = $order_stmt->fetchColumn();
+
     if ($supplier_id <= 0 || $item_id <= 0 || $po_qty <= 0) {
-        $message = '<div style="color: red;">Error: Please select a supplier, item, and enter a valid quantity.</div>';
+        $err_message = '<div style="color: red;">Error: Please select a supplier, item, and enter a valid quantity.</div>';
+    } elseif ($pending_count >= 10) {
+        $err_message = '<div style="color: red;">Purchase Order Limit Reached! You currently have 10 pending Purchase Orders.</div>';
     } else {
         $sql = "INSERT INTO purchase_orders (supplier_id, item_id, qty, status, date_created) VALUES (?, ?, ?, 'Pending', NOW())";
         $stmt = $conn->prepare($sql);
@@ -82,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'receive
 
     if (!$po_data || $po_data['status'] === 'Received') {
         $conn->rollBack();
-        $message = '<div style="color: red;">Error: PO not found or already received.</div>';
+        $err_message = '<div style="color: red;">Error: PO not found or already received.</div>';
     } else {
         $item_id = $po_data['item_id'];
         $received_qty = $po_data['qty'];
@@ -108,11 +115,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'receive
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_supplier') {
     $supplier_id = trim($_POST['supplier_id']);
-    $name = trim($_POST['supplier_name']);
-    $phone = trim($_POST['supplier_phone']);
     $user_id = $_SESSION['id'];
 
-    if (!empty($name) && ($_POST['supplier_action'] ?? '') == 'edit') {
+    if (($_POST['supplier_action'] ?? '') == 'edit') {
+        $name = trim($_POST['supplier_name']);
+        $phone = trim($_POST['supplier_phone']);
+
         $sql = "UPDATE suppliers SET supplier_name = ?, phone = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$name, $phone, $supplier_id]);
@@ -122,7 +130,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_su
         $log_stmt->execute([$user_id, "Supplier: " . $name . " is updated."]);
         $suppliers = $conn->query($suppliers_sql)->fetchAll();
         $message = '<div style="color: green;">Supplier updated successfully!</div>';
+        $purchase_orders = $conn->query($po_sql)->fetchAll();
     } elseif (($_POST['supplier_action'] ?? '') == 'delete') {
+        $information_sql = "SELECT supplier_name, phone FROM suppliers WHERE id = ?";
+        $information_stmt = $conn->prepare($information_sql);
+        $information_stmt->execute([$supplier_id]);
+        $information = $information_stmt->fetch();
+
+        $name = $information['supplier_name'];
+        $phone = $information['phone'];
+
         $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
         $log_stmt = $conn->prepare($log_sql);
         $log_stmt->execute([$user_id, "Supplier: " . $name . " was deleted."]);
@@ -133,6 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_su
         $stmt = $conn->prepare($sql);
         $stmt->execute([$supplier_id]);
         $suppliers = $conn->query($suppliers_sql)->fetchAll();
+        $purchase_orders = $conn->query($po_sql)->fetchAll();
     }
 }
 ?>
