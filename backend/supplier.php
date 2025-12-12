@@ -11,7 +11,7 @@ $suppliers = $conn->query($suppliers_sql)->fetchAll();
 $inventory_sql = "SELECT id, item_name FROM inventory ORDER BY item_name ASC";
 $inventory = $conn->query($inventory_sql)->fetchAll();
 
-$po_sql = "SELECT p.id AS po_id, s.supplier_name, i.item_name, p.qty, p.status, p.date_created
+$po_sql = "SELECT p.id AS po_id, s.supplier_name, i.item_name, p.qty, p.status, p.date_created, p.date_received
             FROM purchase_orders p
             JOIN suppliers s ON p.supplier_id = s.id
             JOIN inventory i ON p.item_id = i.id
@@ -98,7 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'receive
         $update_stmt = $conn->prepare($update_inventory);
         $update_stmt->execute([$received_qty, $item_id]);
 
-        $update_po = "UPDATE purchase_orders SET status = 'Received' WHERE id = ?";
+        $update_po = "UPDATE purchase_orders SET status = 'Received', date_received = NOW() WHERE id = ?";
         $update_po_stmt = $conn->prepare($update_po);
         $update_po_stmt->execute([$po_id]);
 
@@ -131,6 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_su
         $suppliers = $conn->query($suppliers_sql)->fetchAll();
         $message = '<div style="color: green;">Supplier updated successfully!</div>';
         $purchase_orders = $conn->query($po_sql)->fetchAll();
+        header("Location: ../staff/supplier.php?edited=1");
     } elseif (($_POST['supplier_action'] ?? '') == 'delete') {
         $information_sql = "SELECT supplier_name, phone FROM suppliers WHERE id = ?";
         $information_stmt = $conn->prepare($information_sql);
@@ -151,6 +152,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_su
         $stmt->execute([$supplier_id]);
         $suppliers = $conn->query($suppliers_sql)->fetchAll();
         $purchase_orders = $conn->query($po_sql)->fetchAll();
+
+        header("Location: ../staff/supplier.php?deleted=1");
     }
 }
 ?>

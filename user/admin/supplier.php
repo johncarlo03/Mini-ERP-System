@@ -31,7 +31,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
 
-    <div class="ml-64 p-10 <?= $initial_margin_class ?> fade-in-content">
+    <div id="mainContent" class="ml-64 p-10 min-h-screen bg-gray-100 <?= $initial_margin_class ?> fade-in-content">
 
         <h1 class="text-3xl font-bold text-gray-800 mb-8">Supplier & Purchase Order Management</h1>
 
@@ -140,6 +140,8 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                                     Status</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Date Created</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Date Received</th>
                                 <th
                                     class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Action</th>
@@ -171,6 +173,17 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         <?php echo htmlspecialchars($po['date_created']); ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                        <?php if ($po['date_received'] === NULL): ?>
+                                            <span
+                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <?= $status_class ?>">
+                                                <?php echo htmlspecialchars($po['status']); ?>
+
+                                            <?php else: ?>
+                                                <?php echo htmlspecialchars($po['date_created']); ?>
+                                            </span>
+                                        <?php endif; ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                                         <?php if ($po['status'] === 'Pending'): ?>
