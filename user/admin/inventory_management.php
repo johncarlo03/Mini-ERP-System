@@ -11,7 +11,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
 
 <head>
     <meta charset="UTF-8">
-    <title>Mini ERP - Inventory Management</title>
+    <title>Inventory Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../../script/inventory.js"></script>

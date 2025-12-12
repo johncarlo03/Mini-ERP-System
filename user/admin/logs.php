@@ -11,7 +11,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Audit Logs</title>
     <link rel="stylesheet" href="../../css/admin.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../../script/sidebar.js" defer></script>

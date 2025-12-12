@@ -16,7 +16,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <script src="../../script/sidebar.js" defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>ERP Dashboard</title>
+    <title>Dashboard</title>
 </head>
 <body>
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
