@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2025 at 02:23 PM
+-- Generation Time: Dec 12, 2025 at 04:06 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -457,7 +457,12 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `date_time`) VALUES
 (346, 30, 'Sold 12 pcs of Bear Brand to Carloo', '2025-12-12 21:00:28'),
 (347, 30, 'Sold 12 pcs of Bear Brand to Carloo', '2025-12-12 21:03:05'),
 (348, 30, 'Sold 17 pcs of Bear Brand to sadas', '2025-12-12 21:03:13'),
-(349, 30, 'Customer: sadas was deleted.', '2025-12-12 21:03:27');
+(349, 30, 'Customer: sadas was deleted.', '2025-12-12 21:03:27'),
+(350, 30, 'Staff logged out.', '2025-12-12 21:31:55'),
+(351, 10, 'Staff logged out.', '2025-12-12 22:46:30'),
+(352, 9, 'Administrator logged in.', '2025-12-12 22:46:38'),
+(353, 10, 'Staff logged in.', '2025-12-12 22:48:34'),
+(354, 10, 'Staff logged out.', '2025-12-12 23:04:06');
 
 -- --------------------------------------------------------
 
@@ -517,15 +522,15 @@ INSERT INTO `inventory` (`id`, `item_name`, `description`, `qty`, `price`, `imag
 (26, 'Milo', 'Chocolate Drink', 177, 12.99, '../../images/products/download.jpg', 0),
 (27, 'Bear Brand', 'Milk', 80, 12.00, '../../images/products/download (1).jpg', 0),
 (28, 'Kopiko', 'Coffee', 17, 10.00, '../../images/products/8996001410547_800x.webp', 0),
-(30, 'Test Product 2', 'Test item #2', 912, 25.28, '/images/test/2.jpg', 0),
-(31, 'Test Product 3', 'Test item #3', 477, 121.14, '/images/test/3.jpg', 0),
-(32, 'Test Product 4', 'Test item #4', 761, 49.25, '/images/test/4.jpg', 0),
-(33, 'Test Product 5', 'Test item #5', 179, 295.43, '/images/test/5.jpg', 0),
-(34, 'Test Product 6', 'Test item #6', 426, 174.91, '/images/test/6.jpg', 0),
-(35, 'Test Product 7', 'Test item #7', 460, 124.43, '/images/test/7.jpg', 1),
-(36, 'Test Product 8', 'Test item #8', 846, 249.98, '/images/test/8.jpg', 0),
-(37, 'Test Product 9', 'Test item #9', 944, 119.69, '/images/test/9.jpg', 1),
-(38, 'Test Product 10', 'Test item #10', 335, 474.23, '/images/test/10.jpg', 0);
+(30, 'Test Product 2', 'Test item #2', 912, 25.28, '', 0),
+(31, 'Test Product 3', 'Test item #3', 477, 121.14, '', 0),
+(32, 'Test Product 4', 'Test item #4', 761, 49.25, '', 0),
+(33, 'Test Product 5', 'Test item #5', 179, 295.43, '', 0),
+(34, 'Test Product 6', 'Test item #6', 426, 174.91, '', 0),
+(35, 'Test Product 7', 'Test item #7', 460, 124.43, '', 1),
+(36, 'Test Product 8', 'Test item #8', 846, 249.98, '', 0),
+(37, 'Test Product 9', 'Test item #9', 944, 119.69, '', 1),
+(38, 'Test Product 10', 'Test item #10', 335, 474.23, '', 0);
 
 -- --------------------------------------------------------
 
@@ -738,7 +743,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=350;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=355;
 
 --
 -- AUTO_INCREMENT for table `customers`
