@@ -6,7 +6,7 @@ $message = '';
 $customer_sql = "SELECT id, name, phone FROM customers WHERE is_deleted = 0 ORDER BY name ASC";
 $customers = $conn->query($customer_sql)->fetchAll();
 
-$inventory_sql = "SELECT id, item_name, qty, price, image_path FROM inventory ORDER BY item_name ASC";
+$inventory_sql = "SELECT id, item_name, qty, price, image_path FROM inventory WHERE is_deleted = 0 ORDER BY item_name ASC";
 $items = $conn->query($inventory_sql)->fetchAll();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'add_customer') {
@@ -78,11 +78,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'create_
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_customer') {
     $customer_id = trim($_POST['customer_id']);
-    $name = trim($_POST['customer_name']);
-    $phone = trim($_POST['customer_phone']);
+    
     $user_id = $_SESSION['id'];
 
-    if (!empty($name) && ($_POST['customer_action'] ?? '') == 'edit') {
+    if (($_POST['customer_action'] ?? '') == 'edit') {
+        $name = trim($_POST['customer_name']);
+        $phone = trim($_POST['customer_phone']);
+
         $sql = "UPDATE customers SET name = ?, phone = ? WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$name, $phone, $customer_id]);
@@ -92,7 +94,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_cu
         $log_stmt->execute([$user_id, "Customer: " . $name . " is updated."]);
         $customers = $conn->query($customer_sql)->fetchAll();
         $message = '<div style="color: green;">Customer updated successfully!</div>';
+        header("Location: ../staff/sales.php?edited=1");
     } elseif (($_POST['customer_action'] ?? '') == 'delete') {
+        $information_sql = "SELECT name, phone FROM customers WHERE id = ?";
+        $information_stmt = $conn->prepare($information_sql);
+        $information_stmt->execute([$customer_id]);
+        $information = $information_stmt->fetch();
+
+        $name = $information['name'];
+        $phone = $information['phone'];
+
         $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
         $log_stmt = $conn->prepare($log_sql);
         $log_stmt->execute([$user_id, "Customer: " . $name . " was deleted."]);
@@ -104,6 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'edit_cu
         $stmt->execute([$customer_id]);
 
         $customers = $conn->query($customer_sql)->fetchAll();
+        header("Location: ../staff/sales.php?deleted=1");
     }
 }
 
