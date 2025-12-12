@@ -16,19 +16,32 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../../script/sidebar.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-content {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+    </style>
+
 </head>
 
 <body>
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
-    <div class="ml-64 p-10 <?= $initial_margin_class ?>">
+    
+    <div class="ml-64 p-10 <?= $initial_margin_class ?> fade-in-content">
 
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Logs</h1>
+            
             <form method="GET" class="flex items-center gap-2">
                 <label class="block text-gray-700 font-semibold">Filter by Action</label>
                 <select id="actionFilter" name="action" onchange="this.form.submit()"
-                    class="border rounded px-3 py-2 w-64">
+                    class="border rounded px-3 py-2 w-64 transition duration-200 hover:border-indigo-500 focus:ring-2 focus:ring-indigo-500">
                     <option value="" <?php if (empty($selected_action))
                         echo 'selected'; ?>>All Actions</option>
 
@@ -99,12 +112,12 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <?php foreach ($logs as $log): ?>
-                        <tr>
+                        <tr class="transition duration-150 hover:bg-gray-50 hover:shadow-md">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 <?php echo htmlspecialchars($log['id']); ?></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><span
                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        <?php echo ($log['roles'] == 'admin') ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800'; ?>">
+                        <?php echo ($log['roles'] == 'admin') ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800'; ?> transition duration-150 hover:scale-[1.05]">
                                     <?php echo htmlspecialchars($log['name']); ?>
                                 </span></td>
                             <td class="px-6 py-4 text-sm text-gray-500 whitespace-normal break-words">
@@ -119,31 +132,70 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
         <div class="mt-8 flex justify-center">
             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
 
+                <?php 
+                $max_links = 3; 
+                $start_page = max(1, $current_page - floor($max_links / 2));
+                $end_page = min($total_pages, $current_page + floor($max_links / 2));
+
+                if ($end_page - $start_page + 1 < $max_links) {
+                    if ($start_page > 1) {
+                        $start_page = max(1, $start_page - ($max_links - ($end_page - $start_page + 1)));
+                    } elseif ($end_page < $total_pages) {
+                        $end_page = min($total_pages, $end_page + ($max_links - ($end_page - $start_page + 1)));
+                    }
+                }
+                
+                ?>
+
                 <?php if ($current_page > 1): ?>
                     <a href="?page=<?php echo $current_page - 1 . $filter_param; ?>"
-                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-l-md text-gray-700 bg-white hover:bg-gray-50">
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-l-md text-gray-700 bg-white hover:bg-indigo-500 hover:text-white transition duration-150">
                         Previous
                     </a>
                 <?php endif; ?>
 
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <a href="?page=<?php echo $i . $filter_param; ?>" class="<?php echo ($i == $current_page) ? 'bg-indigo-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'; ?> 
-                          relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium">
+                <?php 
+                if ($start_page > 1) {
+                    ?>
+                    <a href="?page=1<?php echo $filter_param; ?>" class="bg-white text-gray-700 hover:bg-gray-100 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium transition duration-150">1</a>
+                    <?php
+                    if ($start_page > 2) {
+                        ?>
+                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-gray-700 text-sm font-medium">...</span>
+                        <?php
+                    }
+                }
+
+                for ($i = $start_page; $i <= $end_page; $i++): ?>
+                    <a href="?page=<?php echo $i . $filter_param; ?>" 
+                       class="<?php echo ($i == $current_page) ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-gray-100'; ?> 
+                        relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium transition duration-150">
                         <?php echo $i; ?>
                     </a>
                 <?php endfor; ?>
 
+                <?php 
+                if ($end_page < $total_pages) {
+                    if ($end_page < $total_pages - 1) {
+                        ?>
+                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-gray-700 text-sm font-medium">...</span>
+                        <?php
+                    }
+                    ?>
+                    <a href="?page=<?php echo $total_pages . $filter_param; ?>" class="bg-white text-gray-700 hover:bg-gray-100 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium transition duration-150"><?php echo $total_pages; ?></a>
+                    <?php
+                }
+                ?>
+
                 <?php if ($current_page < $total_pages): ?>
                     <a href="?page=<?php echo $current_page + 1 . $filter_param; ?>"
-                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-white hover:bg-gray-50">
+                        class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-white hover:bg-indigo-500 hover:text-white transition duration-150">
                         Next
                     </a>
                 <?php endif; ?>
 
             </nav>
         </div>
-    </div>
-
 </body>
 
 </html>
