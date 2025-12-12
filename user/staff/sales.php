@@ -191,6 +191,16 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
             </div>
             <div class="p-6">
                 <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Image</th>
+
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Item Name</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
+                            <th class="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Action</th>
+                        </tr>
+                    </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($items as $item):
                             $stock_status = ($item['qty'] <= 0) ? 'text-red-600' : 'text-green-600';
