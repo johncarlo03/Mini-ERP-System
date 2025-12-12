@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 10, 2025 at 01:37 PM
+-- Generation Time: Dec 12, 2025 at 10:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -25,6 +25,47 @@ DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_test_products` (IN `num_products` INT)   BEGIN
+    -- Variables for loop control
+    DECLARE i INT DEFAULT 1;
+    
+    -- Variables for product data
+    DECLARE product_name VARCHAR(45);
+    DECLARE product_description VARCHAR(45); -- Matches VARCHAR(45) from your table structure
+    DECLARE product_stock INT(11);          -- Matches int(11)
+    DECLARE product_price DECIMAL(10, 2);   -- Matches decimal(10,2)
+    DECLARE product_image_path VARCHAR(255); -- Matches varchar(255)
+    
+    -- Define the minimum and maximum values for random data generation
+    DECLARE min_stock INT DEFAULT 10;
+    DECLARE max_stock INT DEFAULT 1000;
+    DECLARE min_price INT DEFAULT 5;
+    DECLARE max_price INT DEFAULT 500;
+    
+    -- Start the loop
+    WHILE i <= num_products DO
+        -- Generate unique product details
+        SET product_name = CONCAT('Test Product ', i);
+        -- Keep description brief to match VARCHAR(45) length constraint
+        SET product_description = CONCAT('Test item #', i); 
+        
+        -- Generate random stock quantity (between min_stock and max_stock)
+        SET product_stock = FLOOR(min_stock + (RAND() * (max_stock - min_stock + 1)));
+        
+        -- Generate random price (between min_price and max_price, rounded to two decimal places)
+        SET product_price = ROUND(min_price + (RAND() * (max_price - min_price)), 2);
+        
+        -- Set a generic placeholder path (matches the table's default NULL option)
+        SET product_image_path = CONCAT('/images/test/', i, '.jpg'); 
+        
+        -- Insert the new product into the inventory table
+        INSERT INTO inventory (item_name, description, qty, price, image_path)
+        VALUES (product_name, product_description, product_stock, product_price, product_image_path);
+        
+        SET i = i + 1;
+    END WHILE;
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `create_test_users` (IN `num_users` INT)   BEGIN
     DECLARE i INT DEFAULT 1;
     DECLARE user_email VARCHAR(100);
@@ -241,7 +282,119 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `date_time`) VALUES
 (171, 10, 'Administrator Created an Account.', '2025-12-10 20:31:55'),
 (172, 10, 'Administrator Created an Account.', '2025-12-10 20:32:25'),
 (173, 10, 'Administrator Created an Account.', '2025-12-10 20:32:43'),
-(174, 10, 'Staff John Carlo Arias logged out.', '2025-12-10 20:33:11');
+(174, 10, 'Staff John Carlo Arias logged out.', '2025-12-10 20:33:11'),
+(175, 10, 'Staff logged in.', '2025-12-11 18:10:36'),
+(176, 10, 'Sold 12 pcs of Milo to Carlo', '2025-12-11 18:17:21'),
+(177, 10, 'Customer: Michale is added.', '2025-12-11 18:25:17'),
+(178, 10, 'Customer: Michael is added.', '2025-12-11 18:27:50'),
+(179, 10, 'Customer: micahs is added.', '2025-12-11 18:29:23'),
+(180, 10, 'Customer: Mehasdj is added.', '2025-12-11 18:31:51'),
+(181, 10, 'Customer: jhsajjkh is added.', '2025-12-11 18:32:21'),
+(182, 10, 'Customer: Paulskie is added.', '2025-12-11 18:32:29'),
+(183, 10, 'Created PO for item ID: 27 (Qty: 90)', '2025-12-11 19:08:45'),
+(184, 10, 'Staff John Carlo Arias logged out.', '2025-12-11 19:17:18'),
+(185, 10, 'Staff logged in.', '2025-12-11 19:17:26'),
+(186, 10, 'Staff John Carlo Arias logged out.', '2025-12-11 19:19:40'),
+(187, 10, 'Staff logged in.', '2025-12-11 19:19:46'),
+(188, 10, 'Customer: Carlo is updated.', '2025-12-11 19:39:24'),
+(189, 10, 'Customer: aksdj was deleted.', '2025-12-11 19:47:51'),
+(190, 10, 'Customer: aksdj was deleted.', '2025-12-11 19:52:40'),
+(191, 10, 'Customer: Carlo is updated.', '2025-12-11 19:53:25'),
+(192, 10, 'Customer: Carloo is updated.', '2025-12-11 20:23:02'),
+(193, 10, 'Customer: Paul is updated.', '2025-12-11 20:27:59'),
+(194, 10, 'Customer: Carloo is updated.', '2025-12-11 20:28:13'),
+(195, 10, 'Customer: Carloo is updated.', '2025-12-11 20:28:19'),
+(196, 10, 'Customer: Carloo is updated.', '2025-12-11 20:28:45'),
+(197, 10, 'Customer: Carloo is updated.', '2025-12-11 20:28:51'),
+(198, 10, 'Customer: Carloo is updated.', '2025-12-11 20:28:58'),
+(199, 10, 'Customer: Carloo is updated.', '2025-12-11 20:29:10'),
+(200, 10, 'Customer: heliosad is updated.', '2025-12-11 20:29:20'),
+(201, 10, 'Customer: Carloo is updated.', '2025-12-11 20:29:32'),
+(202, 10, 'Customer: heliosad is updated.', '2025-12-11 20:29:47'),
+(203, 10, 'Customer: Carloo is updated.', '2025-12-11 20:31:09'),
+(204, 10, 'Customer: Carloo is updated.', '2025-12-11 20:31:16'),
+(205, 10, 'Customer: heliosad was deleted.', '2025-12-11 20:31:21'),
+(206, 10, 'Staff John Carlo Arias logged out.', '2025-12-11 21:39:10'),
+(207, 10, 'Staff logged in.', '2025-12-11 22:19:25'),
+(208, 10, 'Customer: jhsajjkh was deleted.', '2025-12-11 22:20:15'),
+(209, 10, 'Added Supplier: Prince', '2025-12-11 22:42:23'),
+(210, 10, 'Created PO for item ID: 27 (Qty: 23)', '2025-12-11 22:43:18'),
+(211, 10, 'Created PO for item ID: 26 (Qty: 21)', '2025-12-11 22:45:06'),
+(212, 10, 'Added Supplier: Gaisano', '2025-12-11 22:45:36'),
+(213, 10, 'Supplier: Feeds is updated.', '2025-12-11 22:46:14'),
+(214, 10, 'Supplier: Feeds is updated.', '2025-12-11 22:47:26'),
+(215, 10, 'Supplier: Feeds21 is updated.', '2025-12-11 22:47:33'),
+(216, 10, 'Supplier: Feeds21 was deleted.', '2025-12-11 22:47:40'),
+(217, 10, 'Supplier: Feeds21 was deleted.', '2025-12-11 22:48:19'),
+(218, 10, 'Supplier: jack was deleted.', '2025-12-11 22:49:27'),
+(219, 10, 'Supplier: Polaskjd was deleted.', '2025-12-11 22:49:32'),
+(220, 10, 'Staff John Carlo Arias logged out.', '2025-12-11 22:52:45'),
+(221, 10, 'Administrator logged in.', '2025-12-11 22:52:49'),
+(222, 10, 'Administrator John Carlo Arias logged out.', '2025-12-11 22:56:33'),
+(223, 10, 'Administrator logged in.', '2025-12-12 15:05:40'),
+(224, 10, 'Received PO ID 20, increasing stock.', '2025-12-12 15:11:03'),
+(225, 10, 'Supplier: Nestle is updated.', '2025-12-12 15:11:13'),
+(226, 10, 'Supplier: Nestle is updated.', '2025-12-12 15:11:21'),
+(227, 10, 'Supplier: Gaisano2 is updated.', '2025-12-12 15:11:25'),
+(228, 10, 'Supplier: Gaisano is updated.', '2025-12-12 15:11:29'),
+(229, 10, 'Administrator logged in.', '2025-12-12 15:13:51'),
+(230, 10, 'Supplier: Gaisano is updated.', '2025-12-12 15:17:44'),
+(231, 10, 'Supplier: Gaisano is updated.', '2025-12-12 15:17:47'),
+(232, 10, 'Supplier: Gaisano is updated.', '2025-12-12 15:17:53'),
+(233, 10, 'Created PO for item ID: 27 (Qty: 21)', '2025-12-12 15:18:00'),
+(234, 10, 'Created PO for item ID: 26 (Qty: 90)', '2025-12-12 15:30:14'),
+(235, 10, 'Created PO for item ID: 27 (Qty: 21)', '2025-12-12 15:30:18'),
+(236, 10, 'Created PO for item ID: 26 (Qty: 20)', '2025-12-12 15:30:24'),
+(237, 10, 'Created PO for item ID: 27 (Qty: 20)', '2025-12-12 15:31:09'),
+(238, 10, 'Created PO for item ID: 27 (Qty: 20)', '2025-12-12 15:31:59'),
+(239, 10, 'Added item: Kopiko (Qty: 20)', '2025-12-12 15:32:56'),
+(240, 10, 'Item (ID: 27) updated, but no logged fields were changed.', '2025-12-12 15:33:03'),
+(241, 10, 'Inventory Update (ID: 26): Milo description changed to Chocolate Drink ', '2025-12-12 15:34:09'),
+(242, 10, 'Created PO for item ID: 28 (Qty: 21)', '2025-12-12 15:34:23'),
+(243, 10, 'Created PO for item ID: 28 (Qty: 80)', '2025-12-12 15:34:30'),
+(244, 10, 'Deleted User: TestUser_5', '2025-12-12 15:42:46'),
+(245, 10, 'Deleted User: TestUser_4', '2025-12-12 15:44:15'),
+(246, 10, 'Administrator updated User (ID: 22) – Changes: Role: admin → staff', '2025-12-12 15:44:27'),
+(247, 10, 'Deleted User: TestUser_2', '2025-12-12 15:49:41'),
+(248, 10, 'Administrator updated User (ID: 20) – Changes: Role: admin → staff', '2025-12-12 15:49:52'),
+(249, 10, 'Administrator updated User (ID: 22) – Changes: Role: staff → admin', '2025-12-12 15:50:08'),
+(250, 10, 'Administrator updated User (ID: 22) – Changes: Role: admin → staff', '2025-12-12 15:50:41'),
+(251, 10, 'Administrator updated User (ID: 20) – Changes: Role: staff → admin', '2025-12-12 15:52:49'),
+(252, 10, 'Deleted User: TestUser_1', '2025-12-12 15:52:56'),
+(253, 10, 'Administrator updated User (ID: 22) – Changes: Role: staff → admin', '2025-12-12 15:58:17'),
+(254, 10, 'Administrator updated User (ID: 22) – Changes: Role: admin → staff', '2025-12-12 16:00:22'),
+(255, 10, 'Administrator updated User (ID: 22) – Changes: Role: staff → admin', '2025-12-12 16:01:56'),
+(256, 10, 'Administrator updated User (ID: 22) – Changes: Role: admin → staff', '2025-12-12 16:02:04'),
+(257, 10, 'Administrator updated User (ID: 22) – Changes: Role: staff → admin', '2025-12-12 16:02:19'),
+(258, 10, 'Deleted User: TestUser_3', '2025-12-12 16:02:25'),
+(259, 10, 'Item (ID: 27) updated, but no logged fields were changed.', '2025-12-12 16:02:40'),
+(260, 10, 'Item (ID: 26) updated, but no logged fields were changed.', '2025-12-12 16:03:05'),
+(261, 10, 'Item (ID: 26) updated, but no logged fields were changed.', '2025-12-12 16:04:43'),
+(262, 10, 'Item (ID: 29) updated, but no logged fields were changed.', '2025-12-12 16:12:59'),
+(263, 10, 'Deleted Item: Test Product 1', '2025-12-12 16:13:06'),
+(264, 10, 'Supplier: Gaisano was deleted.', '2025-12-12 16:30:53'),
+(265, 10, 'Supplier: Gaisano was deleted.', '2025-12-12 16:33:13'),
+(266, 10, 'Supplier: Magnolia was deleted.', '2025-12-12 16:35:43'),
+(267, 10, 'Supplier: Magnolia was deleted.', '2025-12-12 16:35:58'),
+(268, 10, 'Supplier: Nestle was deleted.', '2025-12-12 16:36:01'),
+(269, 10, 'Supplier: Nestle was deleted.', '2025-12-12 16:36:04'),
+(270, 10, 'Supplier: Prince was deleted.', '2025-12-12 16:36:07'),
+(271, 10, 'Supplier: Prince was deleted.', '2025-12-12 16:36:32'),
+(272, 10, 'Supplier: Prince was deleted.', '2025-12-12 16:36:59'),
+(273, 10, 'Supplier: Prince was deleted.', '2025-12-12 16:40:10'),
+(274, 10, 'Supplier: Prince was deleted.', '2025-12-12 16:40:15'),
+(275, 10, 'Supplier: Prince was deleted.', '2025-12-12 16:41:01'),
+(276, 10, 'Supplier:  was deleted.', '2025-12-12 16:53:32'),
+(277, 10, 'Supplier:  was deleted.', '2025-12-12 16:56:17'),
+(278, 10, 'Supplier: Gaisano is updated.', '2025-12-12 17:01:39'),
+(279, 10, 'Supplier: Gaisano212 is updated.', '2025-12-12 17:02:06'),
+(280, 10, 'Supplier: Gaisano is updated.', '2025-12-12 17:03:01'),
+(281, 10, 'Supplier: Gaisano is updated.', '2025-12-12 17:03:08'),
+(282, 10, 'Supplier:  was deleted.', '2025-12-12 17:03:15'),
+(283, 10, 'Supplier: Nestle was deleted.', '2025-12-12 17:03:33'),
+(284, 10, 'Supplier: Magnolia was deleted.', '2025-12-12 17:03:38'),
+(285, 10, 'Supplier: Prince21 is updated.', '2025-12-12 17:04:08'),
+(286, 10, 'Supplier: Prince is updated.', '2025-12-12 17:05:56');
 
 -- --------------------------------------------------------
 
@@ -252,23 +405,30 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `date_time`) VALUES
 CREATE TABLE `customers` (
   `id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `phone` int(11) NOT NULL
+  `phone` varchar(20) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`id`, `name`, `phone`) VALUES
-(1, 'Carlo', 9823912),
-(2, 'Paul', 2147483647),
-(3, 'Saaskld', 20930123),
-(4, 'sadsa', 3213213),
-(5, 'Mak', 921831212),
-(6, 'aksdj', 983123),
-(7, 'sadas', 21321312),
-(8, 'heliosad', 12321545),
-(9, 'kjashd1', 8273124);
+INSERT INTO `customers` (`id`, `name`, `phone`, `is_deleted`) VALUES
+(1, 'Carloo', '09275078123', 0),
+(2, 'Paul', '1234056786', 0),
+(3, 'Saaskld', '20930123', 0),
+(4, 'sadsa', '3213213', 0),
+(5, 'Mak', '921831212', 0),
+(6, 'aksdj', '983123', 1),
+(7, 'sadas', '21321312', 0),
+(8, 'heliosad', '2147483647', 1),
+(9, 'kjashd1', '8273124', 0),
+(10, 'Michale', '0', 0),
+(11, 'Michael', '234412', 0),
+(12, 'micahs', '12837812', 0),
+(13, 'Mehasdj', '213123124', 0),
+(14, 'jhsajjkh', '2147483647', 1),
+(15, 'Paulskie', '218973124', 0);
 
 -- --------------------------------------------------------
 
@@ -290,8 +450,18 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `item_name`, `description`, `qty`, `price`, `image_path`) VALUES
-(26, 'Milo', '', 20, 12.99, '../../images/products/download.jpg'),
-(27, 'Bear Brand', '', 20, 12.00, '../../images/products/download (1).jpg');
+(26, 'Milo', 'Chocolate Drink', 8, 12.99, '../../images/products/download.jpg'),
+(27, 'Bear Brand', 'Milk', 110, 12.00, '../../images/products/download (1).jpg'),
+(28, 'Kopiko', 'Coffee', 20, 10.00, '../../images/products/8996001410547_800x.webp'),
+(30, 'Test Product 2', 'Test item #2', 912, 25.28, '/images/test/2.jpg'),
+(31, 'Test Product 3', 'Test item #3', 477, 121.14, '/images/test/3.jpg'),
+(32, 'Test Product 4', 'Test item #4', 761, 49.25, '/images/test/4.jpg'),
+(33, 'Test Product 5', 'Test item #5', 179, 295.43, '/images/test/5.jpg'),
+(34, 'Test Product 6', 'Test item #6', 426, 174.91, '/images/test/6.jpg'),
+(35, 'Test Product 7', 'Test item #7', 460, 124.43, '/images/test/7.jpg'),
+(36, 'Test Product 8', 'Test item #8', 846, 249.98, '/images/test/8.jpg'),
+(37, 'Test Product 9', 'Test item #9', 944, 119.69, '/images/test/9.jpg'),
+(38, 'Test Product 10', 'Test item #10', 335, 474.23, '/images/test/10.jpg');
 
 -- --------------------------------------------------------
 
@@ -331,7 +501,18 @@ INSERT INTO `purchase_orders` (`id`, `supplier_id`, `item_id`, `qty`, `status`, 
 (16, 5, 26, 23, 'Received', '2025-12-09 17:57:17'),
 (17, 5, 26, 23, 'Received', '2025-12-09 17:57:33'),
 (18, 1, 26, 11, 'Received', '2025-12-09 17:57:41'),
-(19, 4, 26, 90, 'Received', '2025-12-10 17:56:35');
+(19, 4, 26, 90, 'Received', '2025-12-10 17:56:35'),
+(20, 4, 27, 90, 'Received', '2025-12-11 19:08:45'),
+(21, 8, 27, 23, 'Pending', '2025-12-11 22:43:18'),
+(22, 8, 26, 21, 'Pending', '2025-12-11 22:45:06'),
+(23, 9, 27, 21, 'Pending', '2025-12-12 15:18:00'),
+(24, 9, 26, 90, 'Pending', '2025-12-12 15:30:14'),
+(25, 1, 27, 21, 'Pending', '2025-12-12 15:30:18'),
+(26, 8, 26, 20, 'Pending', '2025-12-12 15:30:24'),
+(27, 9, 27, 20, 'Pending', '2025-12-12 15:31:09'),
+(28, 1, 27, 20, 'Pending', '2025-12-12 15:31:59'),
+(29, 8, 28, 21, 'Pending', '2025-12-12 15:34:23'),
+(30, 1, 28, 80, 'Pending', '2025-12-12 15:34:30');
 
 -- --------------------------------------------------------
 
@@ -377,7 +558,8 @@ INSERT INTO `sales` (`id`, `customer_id`, `item_id`, `qty`, `date_created`, `tot
 (26, 1, 26, 1, '2025-12-10 17:59:33', 12.99),
 (27, 6, 26, 1, '2025-12-10 17:59:39', 12.99),
 (28, 1, 26, 1, '2025-12-10 18:00:27', 12.99),
-(29, 1, 26, 12, '2025-12-10 18:02:01', 155.88);
+(29, 1, 26, 12, '2025-12-10 18:02:01', 155.88),
+(30, 1, 26, 12, '2025-12-11 18:17:21', 155.88);
 
 -- --------------------------------------------------------
 
@@ -388,19 +570,22 @@ INSERT INTO `sales` (`id`, `customer_id`, `item_id`, `qty`, `date_created`, `tot
 CREATE TABLE `suppliers` (
   `id` int(11) NOT NULL,
   `supplier_name` varchar(45) NOT NULL,
-  `phone` int(11) NOT NULL
+  `phone` varchar(20) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `suppliers`
 --
 
-INSERT INTO `suppliers` (`id`, `supplier_name`, `phone`) VALUES
-(1, 'Magnolia', 920831923),
-(4, 'Feeds', 129312412),
-(5, 'Nestle', 21398124),
-(6, 'jack', 1293821312),
-(7, 'Polaskjd', 2173123);
+INSERT INTO `suppliers` (`id`, `supplier_name`, `phone`, `is_deleted`) VALUES
+(1, 'Magnolia', '920831923', 0),
+(4, 'Feeds21', '092378194', 0),
+(5, 'Nestle', '1273612', 0),
+(6, 'jack', '1293821312', 0),
+(7, 'Polaskjd', '2173123', 0),
+(8, 'Prince', '021421412', 0),
+(9, 'Gaisano', '12', 0);
 
 -- --------------------------------------------------------
 
@@ -423,12 +608,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `roles`) VALUES
 (2, 'Mich2s', 'micch@gmail.com', '', 'staff'),
 (9, 'Michael', 'michael@gmail.com', '$2y$10$9iSaiowJ1YJEaPlLogDtlOsiBZ28l3o6JWp0z1GYLPijn3NIMXJ.i', 'admin'),
-(10, 'John Carlo Arias', 'carlo@gmail.com', '$2y$10$b/KlZueTDzZ7Fx/DKX/r2.6Re/IEiQgC6mXFZS6BifGwyrSBauP76', 'staff'),
-(20, 'TestUser_1', 'testuser1@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin'),
-(21, 'TestUser_2', 'testuser2@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin'),
-(22, 'TestUser_3', 'testuser3@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin'),
-(23, 'TestUser_4', 'testuser4@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin'),
-(24, 'TestUser_5', 'testuser5@example.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'admin'),
+(10, 'John Carlo Arias', 'carlo@gmail.com', '$2y$10$b/KlZueTDzZ7Fx/DKX/r2.6Re/IEiQgC6mXFZS6BifGwyrSBauP76', 'admin'),
 (30, 'Kendra Maxene Pisao', 'kendra@gmail.com', '$2y$10$GCby/Vgw7B/CtTyZZxoTVOXHb3JDN9WbwrG9Oq4EZ8ZA6RdWO0xaG', 'staff'),
 (31, 'Jelaine Faye Gica', 'jelaine@gmail.com', '$2y$10$5QslgEfjp0C676Hv8fmFb.xHqsWMHS59rHgxoT2g2m1Yce7zBnGGO', 'staff'),
 (32, 'Paulo Lumapas', 'paulo@gmail.com', '$2y$10$aVRScHA8Jmle0PSu3/ckJegRcT2OleKbohNj.LmBr1t3L4SQ90AU6', 'staff'),
@@ -490,37 +670,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=175;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=287;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `purchase_orders`
 --
 ALTER TABLE `purchase_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `users`
