@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 try {
-    $sql = "SELECT id, item_name, description, qty, price, image_path FROM inventory ORDER BY item_name ASC";
+    $sql = "SELECT id, item_name, description, qty, price, image_path FROM inventory WHERE is_deleted = 0 ORDER BY item_name ASC";
     $stmt = $conn->query($sql);
     $items = $stmt->fetchAll();
 } catch (PDOException $e) {
