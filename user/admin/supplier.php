@@ -1,10 +1,12 @@
 <?php
+
 include "../../backend/supplier.php";
 
 if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     header("Location: ../login.php");
     exit();
 }
+
 ?>
 
 
@@ -16,25 +18,29 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini ERP - Supplier & PO Management</title>
     <link rel="stylesheet" href="../../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../../script/sidebar.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../../script/supplier.js" defer></script>
+    <style>
+
+    </style>
 </head>
 
 <body class="bg-gray-100">
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
-    <div class="ml-64 p-10 <?= $initial_margin_class ?>">
+
+    <div class="ml-64 p-10 <?= $initial_margin_class ?> fade-in-content">
 
         <h1 class="text-3xl font-bold text-gray-800 mb-8">Supplier & Purchase Order Management</h1>
 
-        <?php if (!empty($error_message)): ?>
+        <?php if (!empty($err_message)): ?>
             <div class="p-3 mb-4 rounded bg-red-100 text-red-700 border border-red-300">
-                <?= $error_message ?>
+                <?= $err_message ?>
             </div>
         <?php endif; ?>
-        
+
         <?php if (!empty($message)): ?>
             <div class="p-3 mb-4 rounded bg-green-100 text-green-700 border border-green-300">
                 <?= $message ?>
@@ -43,39 +49,44 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
 
-            <div class="bg-white p-6 rounded-xl shadow-lg border">
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border transition duration-300 hover:shadow-2xl hover:scale-[1.01]">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold mb-4 text-gray-700">Add New Supplier</h2>
 
                     <button type="button" onclick="openEditSupplierModal()"
-                        class="bg-green-500 text-white font-semibold py-1 px-3 rounded-lg hover:bg-green-600 transition shadow-sm text-sm">
+                        class="bg-green-500 text-white font-semibold py-1 px-3 rounded-lg hover:bg-green-600 transition duration-150 shadow-sm text-sm transform hover:scale-[1.05]">
                         Edit Existing supplier
                     </button>
                 </div>
-                
+
                 <form method="POST" action="supplier.php" class="space-y-4">
                     <input type="hidden" name="action" value="add_supplier">
 
                     <input name="supplier_name" type="text" placeholder="Supplier Name"
-                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-500" required>
+                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150"
+                        required>
 
                     <input name="supplier_phone" type="number" placeholder="Phone Number"
-                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-500" required>
+                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150"
+                        required>
 
                     <button type="submit"
-                        class="w-full bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150">
+                        class="w-full bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-150 transform hover:scale-[1.01]">
                         Register Supplier
                     </button>
                 </form>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-lg border">
+            <div
+                class="bg-white p-6 rounded-xl shadow-lg border transition duration-300 hover:shadow-2xl hover:scale-[1.01]">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700">Create Purchase Order</h2>
                 <form method="POST" action="supplier.php" class="space-y-4">
                     <input type="hidden" name="action" value="create_po">
 
                     <select name="supplier_id"
-                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-500" required>
+                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-500 transition duration-150"
+                        required>
                         <option value="">Select Supplier</option>
                         <?php foreach ($suppliers as $supplier): ?>
                             <option value="<?php echo htmlspecialchars($supplier['id']); ?>">
@@ -84,7 +95,8 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                         <?php endforeach; ?>
                     </select>
 
-                    <select name="item_id" class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-500"
+                    <select name="item_id"
+                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-500 transition duration-150"
                         required>
                         <option value="">Select Inventory Item</option>
                         <?php foreach ($inventory as $item): ?>
@@ -95,10 +107,11 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                     </select>
 
                     <input type="number" placeholder="Quantity" name="qty" min="1"
-                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-500" required>
+                        class="w-full border rounded px-4 py-2 focus:ring-2 focus:ring-indigo-500 transition duration-150"
+                        required>
 
                     <button type="submit"
-                        class="w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-150">
+                        class="w-full bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-150 transform hover:scale-[1.01]">
                         Submit Purchase Order
                     </button>
                 </form>
@@ -134,15 +147,19 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <?php foreach ($purchase_orders as $po): ?>
-                                <tr class="hover:bg-gray-50 transition duration-100">
+                                <tr class="hover:bg-blue-50/50 transition duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        <?php echo htmlspecialchars($po['po_id']); ?></td>
+                                        <?php echo htmlspecialchars($po['po_id']); ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                        <?php echo htmlspecialchars($po['supplier_name']); ?></td>
+                                        <?php echo htmlspecialchars($po['supplier_name']); ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                        <?php echo htmlspecialchars($po['item_name']); ?></td>
+                                        <?php echo htmlspecialchars($po['item_name']); ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                        <?php echo htmlspecialchars($po['qty']); ?></td>
+                                        <?php echo htmlspecialchars($po['qty']); ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <?php
                                         $status_class = $po['status'] === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800';
@@ -153,14 +170,15 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                        <?php echo htmlspecialchars($po['date_created']); ?></td>
+                                        <?php echo htmlspecialchars($po['date_created']); ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                                         <?php if ($po['status'] === 'Pending'): ?>
                                             <form method="POST" style="display:inline;">
                                                 <input type="hidden" name="action" value="receive_po">
                                                 <input type="hidden" name="po_id" value="<?php echo $po['po_id']; ?>">
                                                 <button type="submit"
-                                                    class="text-white bg-green-500 hover:bg-green-600 font-semibold py-1 px-3 rounded text-xs transition">
+                                                    class="text-white bg-green-500 hover:bg-green-600 font-semibold py-1 px-3 rounded text-xs transition duration-150 transform hover:scale-[1.05]">
                                                     Receive Stock
                                                 </button>
                                             </form>
@@ -178,12 +196,13 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     </div>
 
     <div id="supplierEditModal"
-        class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        class="fixed inset-0 bg-gray-900 bg-opacity-75 hidden items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div
+            class="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto modal-content-animation">
             <div class="p-6 border-b flex justify-between items-center sticky top-0 bg-white z-10">
                 <h3 class="text-2xl font-bold text-gray-800">Edit Supplier Details</h3>
                 <button onclick="closeEditSupplierModal()"
-                    class="text-gray-500 hover:text-gray-900 text-xl font-bold">&times;</button>
+                    class="text-gray-500 hover:text-gray-900 text-xl font-bold transition duration-150 transform hover:scale-[1.1]">&times;</button>
             </div>
 
             <div class="p-6 space-y-4">
@@ -224,19 +243,26 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                     </div>
 
                     <button type="submit" value="edit" name="supplier_action"
-                        class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md">
+                        class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md transform hover:scale-[1.01]">
                         Save Changes
                     </button>
-                    <button type="submit" value="delete" name="supplier_action"
-                        class="w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition duration-200 shadow-md">
+                    <button type="button" value="delete" name="supplier_action" onclick="confirmDelete(document.getElementById('edit_supplier_id').value)"
+                        class="w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition duration-200 shadow-md transform hover:scale-[1.01]">
                         Delete supplier
                     </button>
                 </form>
-
+                <form method="POST" action="supplier.php" id="deleteSupplierForm">
+                    <input type="hidden" name="action" value="edit_supplier">
+                    <input type="hidden" value="delete" name="supplier_action">
+                    <input type="hidden" id="delete_supplier_id" name="supplier_id">
+                </form>
             </div>
         </div>
     </div>
 
+    <script>
+
+    </script>
 </body>
 
 </html>
