@@ -14,9 +14,9 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Staff Account</title>
     <link rel="stylesheet" href="../../css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../../script/staff.js"></script>
     <script src="../../script/sidebar.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -29,20 +29,20 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
 
-    <div class="ml-64 p-10 <?= $initial_margin_class ?>">
+    <div class="ml-64 p-10 fade-in-content <?= $initial_margin_class ?>">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">Staff Management</h1>
 
-        <div class="bg-white p-8 rounded-lg shadow-xl w-full mb-8">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-full mb-8 transition duration-300 hover:shadow-2xl">
 
             <div class="flex justify-end space-x-3 mb-6">
                 <button id="resetBtn" onclick="resetForm()" hidden type="button"
-                    class="px-4 py-2 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 transition duration-200">
+                    class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition duration-200 transform hover:scale-[1.03]">
                     Cancel Edit / Create New
                 </button>
 
                 <button id="deleteBtn" onclick="confirmDelete(document.getElementById('delete_user_id').value)" hidden
                     type="button"
-                    class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-200">
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 transform hover:scale-[1.03]">
                     Delete Staff
                 </button>
             </div>
@@ -76,7 +76,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                 </div>
 
                 <button type="submit" name="signup" id="submitBtn"
-                    class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300">Create
+                    class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300 transform hover:scale-[1.005]">Create
                     Staff Account
                 </button>
 
@@ -91,13 +91,13 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
 
 
         <?php if (!empty($error_message)): ?>
-            <p class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg w-full mb-8">
+            <p class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg w-full mb-8 alert-animation">
                 <?php echo htmlspecialchars($error_message); ?>
             </p>
         <?php endif; ?>
 
         <?php if (!empty($success_message)): ?>
-            <p class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg w-full mb-8">
+            <p class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg w-full mb-8 alert-animation">
                 <?php echo htmlspecialchars($success_message); ?>
             </p>
         <?php endif; ?>
@@ -123,31 +123,34 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                 <tbody class="bg-white divide-y divide-gray-200">
                     <?php if (!empty($staffs)): ?>
                         <?php foreach ($staffs as $staff): ?>
-                            <tr>
+                            <tr class="transition duration-150 hover:bg-blue-50/50">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <?php echo htmlspecialchars($staff['id']); ?></td>
+                                    <?php echo htmlspecialchars($staff['id']); ?>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo htmlspecialchars($staff['name']); ?></td>
+                                    <?php echo htmlspecialchars($staff['name']); ?>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo htmlspecialchars($staff['email']); ?></td>
+                                    <?php echo htmlspecialchars($staff['email']); ?>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        <?php echo ($staff['roles'] == 'admin') ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800'; ?>">
+                                        <?php echo ($staff['roles'] == 'admin') ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800'; ?> transition duration-150 hover:shadow-md">
                                         <?php echo htmlspecialchars(ucfirst($staff['roles'])); ?>
                                     </span>
                                 </td>
                                 <td class="px-6 text-center py-4 whitespace-nowrap text-sm font-medium">
                                     <button onclick="fillForm(
-                                            <?= $staff['id'] ?>,
-                                            '<?= htmlspecialchars($staff['name']) ?>',
-                                            '<?= htmlspecialchars($staff['email']) ?>',
-                                            '<?= htmlspecialchars($staff['roles']) ?>'
-                                        )"
-                                        class="text-white bg-blue-500 hover:bg-blue-600 font-semibold py-1 px-3 rounded text-xs transition">Edit
+                                                <?= $staff['id'] ?>,
+                                                '<?= htmlspecialchars($staff['name']) ?>',
+                                                '<?= htmlspecialchars($staff['email']) ?>',
+                                                '<?= htmlspecialchars($staff['roles']) ?>'
+                                            )"
+                                        class="text-white bg-blue-500 hover:bg-blue-600 font-semibold py-1 px-3 rounded text-xs transition duration-150 transform hover:scale-[1.05]">Edit
                                     </button>
                                     <button onclick="confirmDelete(<?= $staff['id'] ?>)" type="button"
-                                        class="text-white bg-red-500 hover:bg-red-700 font-semibold py-1 px-3 rounded text-xs transition ml-2">
+                                        class="text-white bg-red-500 hover:bg-red-700 font-semibold py-1 px-3 rounded text-xs transition duration-150 transform hover:scale-[1.05] ml-2">
                                         Delete
                                     </button>
                                 </td>
