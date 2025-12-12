@@ -58,7 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['action'] ?? '') == 'create_
             $update_stmt->execute([$sold_qty, $item_id]);
 
             $conn->commit();
-            $inventory_sql = "SELECT id, item_name, qty FROM inventory ORDER BY item_name ASC";
             $items = $conn->query($inventory_sql)->fetchAll();
 
             $customer_sql = "SELECT name FROM customers WHERE id = ?";
