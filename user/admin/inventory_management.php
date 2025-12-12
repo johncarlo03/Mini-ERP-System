@@ -132,10 +132,13 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <?php foreach ($items as $item): ?>
+                        <?php foreach ($items as $item): 
+                            $image_src = !empty($item['image_path']) ? htmlspecialchars($item['image_path']) : '../../images/placeholder.jpg';
+                            ?>
                             <tr class="transition duration-150 hover:bg-blue-50/50">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <img src="<?= htmlspecialchars($item['image_path']) ?>"
+                                    
+                                            <img src="<?= $image_src ?>" alt="<?= htmlspecialchars($item['item_name']) ?>"
                                         alt="<?= htmlspecialchars($item['item_name']) ?>"
                                         class="w-12 h-12 object-cover rounded-md border border-gray-200 transition duration-150 hover:shadow-lg hover:border-blue-300">
                                 </td>
