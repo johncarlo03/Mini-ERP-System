@@ -81,5 +81,19 @@ document.addEventListener("DOMContentLoaded", function () {
       showConfirmButton: false,
       timer: 1500,
     });
+  } else if (window.location.search.includes("edited=1")) {
+    Swal.fire({
+      icon: "success",
+      title: "Edited!",
+      text: "The staff account has been successfully updated.",
+      showConfirmButton: false,
+      timer: 1500,
+    });
   }
+
+setTimeout(() => {
+    if (window.location.search) {
+        window.history.replaceState(null, null, window.location.pathname);
+    }
+}, 500);
 });
