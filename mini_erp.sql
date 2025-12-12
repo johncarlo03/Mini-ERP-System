@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2025 at 10:11 AM
+-- Generation Time: Dec 12, 2025 at 12:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -394,7 +394,45 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `date_time`) VALUES
 (283, 10, 'Supplier: Nestle was deleted.', '2025-12-12 17:03:33'),
 (284, 10, 'Supplier: Magnolia was deleted.', '2025-12-12 17:03:38'),
 (285, 10, 'Supplier: Prince21 is updated.', '2025-12-12 17:04:08'),
-(286, 10, 'Supplier: Prince is updated.', '2025-12-12 17:05:56');
+(286, 10, 'Supplier: Prince is updated.', '2025-12-12 17:05:56'),
+(287, 10, 'Supplier: Feeds is updated.', '2025-12-12 17:16:32'),
+(288, 10, 'Supplier: Feeds is updated.', '2025-12-12 17:16:36'),
+(289, 10, 'Supplier: Feeds is updated.', '2025-12-12 17:16:39'),
+(290, 10, 'Supplier: jack was deleted.', '2025-12-12 17:16:45'),
+(291, 10, 'Inventory Update (ID: 26): Milo quantity updated from 8 to 100 ', '2025-12-12 17:24:45'),
+(292, 10, 'Deleted Item: Test Product 7', '2025-12-12 17:30:58'),
+(293, 10, 'Deleted Item: Test Product 9', '2025-12-12 17:32:53'),
+(294, 10, 'Deleted User: Harvy Drona', '2025-12-12 17:35:40'),
+(295, 10, 'Administrator logged out.', '2025-12-12 17:57:59'),
+(296, 10, 'Staff logged in.', '2025-12-12 17:58:33'),
+(297, 10, 'Received PO ID 21, increasing stock.', '2025-12-12 18:04:45'),
+(298, 10, 'Created PO for item ID: 27 (Qty: 21)', '2025-12-12 18:12:20'),
+(299, 10, 'Received PO ID 22, increasing stock.', '2025-12-12 18:12:22'),
+(300, 10, 'Received PO ID 23, increasing stock.', '2025-12-12 18:12:41'),
+(301, 10, 'Sold 20 pcs of Bear Brand to Paul', '2025-12-12 18:14:01'),
+(302, 10, 'Customer: sadsa was deleted.', '2025-12-12 18:14:13'),
+(303, 10, 'Supplier: Magnolia was deleted.', '2025-12-12 18:14:51'),
+(304, 10, 'Supplier: Polaskjd was deleted.', '2025-12-12 18:15:55'),
+(305, 10, 'Supplier: Feeds was deleted.', '2025-12-12 18:16:10'),
+(306, 10, 'Staff logged out.', '2025-12-12 18:20:32'),
+(307, 10, 'Administrator logged in.', '2025-12-12 18:20:53'),
+(308, 10, 'Administrator updated User (ID: 10) – Changes: Name: John Carlo Arias → John Carlo ', '2025-12-12 18:21:02'),
+(309, 10, 'Deleted User: John Carlo ', '2025-12-12 18:21:10'),
+(310, 10, 'Administrator updated User (ID: 10) – Changes: Role: admin → staff, Password: updated', '2025-12-12 18:21:31'),
+(311, 10, 'Administrator logged out.', '2025-12-12 18:22:50'),
+(312, 10, 'Staff logged in.', '2025-12-12 18:22:55'),
+(313, 10, 'Customer:  was deleted.', '2025-12-12 18:29:59'),
+(314, 10, 'Customer:  was deleted.', '2025-12-12 18:30:16'),
+(315, 10, 'Customer:  was deleted.', '2025-12-12 18:31:39'),
+(316, 10, 'Customer:  was deleted.', '2025-12-12 18:31:56'),
+(317, 10, 'Customer: Carloo was deleted.', '2025-12-12 18:32:04'),
+(318, 10, 'Customer: Michael was deleted.', '2025-12-12 18:32:11'),
+(319, 10, 'Customer: kjashd1 was deleted.', '2025-12-12 18:33:55'),
+(320, 10, 'Customer: Mak2121 is updated.', '2025-12-12 18:35:10'),
+(321, 10, 'Customer: Michel is updated.', '2025-12-12 18:35:19'),
+(322, 10, 'Customer: Mehasdj was deleted.', '2025-12-12 18:35:35'),
+(323, 10, 'Staff logged out.', '2025-12-12 18:35:48'),
+(324, 10, 'Administrator logged in.', '2025-12-12 18:37:39');
 
 -- --------------------------------------------------------
 
@@ -414,19 +452,19 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `name`, `phone`, `is_deleted`) VALUES
-(1, 'Carloo', '09275078123', 0),
+(1, 'Carloo', '09275078123', 1),
 (2, 'Paul', '1234056786', 0),
 (3, 'Saaskld', '20930123', 0),
-(4, 'sadsa', '3213213', 0),
-(5, 'Mak', '921831212', 0),
+(4, 'sadsa', '3213213', 1),
+(5, 'Michel', '921831212', 0),
 (6, 'aksdj', '983123', 1),
 (7, 'sadas', '21321312', 0),
 (8, 'heliosad', '2147483647', 1),
-(9, 'kjashd1', '8273124', 0),
-(10, 'Michale', '0', 0),
-(11, 'Michael', '234412', 0),
+(9, 'kjashd1', '8273124', 1),
+(10, 'Michale', '0', 1),
+(11, 'Michael', '234412', 1),
 (12, 'micahs', '12837812', 0),
-(13, 'Mehasdj', '213123124', 0),
+(13, 'Mehasdj', '213123124', 1),
 (14, 'jhsajjkh', '2147483647', 1),
 (15, 'Paulskie', '218973124', 0);
 
@@ -442,26 +480,27 @@ CREATE TABLE `inventory` (
   `description` varchar(45) NOT NULL,
   `qty` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `image_path` varchar(255) DEFAULT NULL
+  `image_path` varchar(255) DEFAULT NULL,
+  `is_deleted` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inventory`
 --
 
-INSERT INTO `inventory` (`id`, `item_name`, `description`, `qty`, `price`, `image_path`) VALUES
-(26, 'Milo', 'Chocolate Drink', 8, 12.99, '../../images/products/download.jpg'),
-(27, 'Bear Brand', 'Milk', 110, 12.00, '../../images/products/download (1).jpg'),
-(28, 'Kopiko', 'Coffee', 20, 10.00, '../../images/products/8996001410547_800x.webp'),
-(30, 'Test Product 2', 'Test item #2', 912, 25.28, '/images/test/2.jpg'),
-(31, 'Test Product 3', 'Test item #3', 477, 121.14, '/images/test/3.jpg'),
-(32, 'Test Product 4', 'Test item #4', 761, 49.25, '/images/test/4.jpg'),
-(33, 'Test Product 5', 'Test item #5', 179, 295.43, '/images/test/5.jpg'),
-(34, 'Test Product 6', 'Test item #6', 426, 174.91, '/images/test/6.jpg'),
-(35, 'Test Product 7', 'Test item #7', 460, 124.43, '/images/test/7.jpg'),
-(36, 'Test Product 8', 'Test item #8', 846, 249.98, '/images/test/8.jpg'),
-(37, 'Test Product 9', 'Test item #9', 944, 119.69, '/images/test/9.jpg'),
-(38, 'Test Product 10', 'Test item #10', 335, 474.23, '/images/test/10.jpg');
+INSERT INTO `inventory` (`id`, `item_name`, `description`, `qty`, `price`, `image_path`, `is_deleted`) VALUES
+(26, 'Milo', 'Chocolate Drink', 121, 12.99, '../../images/products/download.jpg', 0),
+(27, 'Bear Brand', 'Milk', 134, 12.00, '../../images/products/download (1).jpg', 0),
+(28, 'Kopiko', 'Coffee', 20, 10.00, '../../images/products/8996001410547_800x.webp', 0),
+(30, 'Test Product 2', 'Test item #2', 912, 25.28, '/images/test/2.jpg', 0),
+(31, 'Test Product 3', 'Test item #3', 477, 121.14, '/images/test/3.jpg', 0),
+(32, 'Test Product 4', 'Test item #4', 761, 49.25, '/images/test/4.jpg', 0),
+(33, 'Test Product 5', 'Test item #5', 179, 295.43, '/images/test/5.jpg', 0),
+(34, 'Test Product 6', 'Test item #6', 426, 174.91, '/images/test/6.jpg', 0),
+(35, 'Test Product 7', 'Test item #7', 460, 124.43, '/images/test/7.jpg', 1),
+(36, 'Test Product 8', 'Test item #8', 846, 249.98, '/images/test/8.jpg', 0),
+(37, 'Test Product 9', 'Test item #9', 944, 119.69, '/images/test/9.jpg', 1),
+(38, 'Test Product 10', 'Test item #10', 335, 474.23, '/images/test/10.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -475,44 +514,46 @@ CREATE TABLE `purchase_orders` (
   `item_id` int(11) NOT NULL,
   `qty` int(11) NOT NULL,
   `status` varchar(45) NOT NULL DEFAULT 'Pending',
-  `date_created` datetime NOT NULL
+  `date_created` datetime NOT NULL,
+  `date_received` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `purchase_orders`
 --
 
-INSERT INTO `purchase_orders` (`id`, `supplier_id`, `item_id`, `qty`, `status`, `date_created`) VALUES
-(1, 1, 12, 12, 'Received', '2025-12-02 15:21:16'),
-(2, 1, 12, 12, 'Received', '2025-12-02 15:22:05'),
-(3, 1, 12, 12, 'Received', '2025-12-02 15:35:56'),
-(4, 1, 12, 12, 'Received', '2025-12-02 15:36:16'),
-(5, 1, 12, 12, 'Received', '2025-12-02 15:36:23'),
-(6, 1, 12, 12, 'Received', '2025-12-02 15:37:25'),
-(7, 1, 12, 11, 'Received', '2025-12-02 15:47:23'),
-(8, 1, 12, 11, 'Received', '2025-12-02 15:47:26'),
-(9, 1, 12, 11, 'Received', '2025-12-02 15:48:03'),
-(10, 1, 12, 11, 'Received', '2025-12-02 15:48:08'),
-(11, 1, 12, 21, 'Received', '2025-12-03 15:51:16'),
-(12, 4, 19, 33, 'Received', '2025-12-07 23:29:26'),
-(13, 4, 19, 22, 'Received', '2025-12-07 23:32:16'),
-(14, 4, 19, 33, 'Received', '2025-12-08 17:15:47'),
-(15, 4, 19, 11, 'Received', '2025-12-09 16:18:50'),
-(16, 5, 26, 23, 'Received', '2025-12-09 17:57:17'),
-(17, 5, 26, 23, 'Received', '2025-12-09 17:57:33'),
-(18, 1, 26, 11, 'Received', '2025-12-09 17:57:41'),
-(19, 4, 26, 90, 'Received', '2025-12-10 17:56:35'),
-(20, 4, 27, 90, 'Received', '2025-12-11 19:08:45'),
-(21, 8, 27, 23, 'Pending', '2025-12-11 22:43:18'),
-(22, 8, 26, 21, 'Pending', '2025-12-11 22:45:06'),
-(23, 9, 27, 21, 'Pending', '2025-12-12 15:18:00'),
-(24, 9, 26, 90, 'Pending', '2025-12-12 15:30:14'),
-(25, 1, 27, 21, 'Pending', '2025-12-12 15:30:18'),
-(26, 8, 26, 20, 'Pending', '2025-12-12 15:30:24'),
-(27, 9, 27, 20, 'Pending', '2025-12-12 15:31:09'),
-(28, 1, 27, 20, 'Pending', '2025-12-12 15:31:59'),
-(29, 8, 28, 21, 'Pending', '2025-12-12 15:34:23'),
-(30, 1, 28, 80, 'Pending', '2025-12-12 15:34:30');
+INSERT INTO `purchase_orders` (`id`, `supplier_id`, `item_id`, `qty`, `status`, `date_created`, `date_received`) VALUES
+(1, 1, 12, 12, 'Received', '2025-12-02 15:21:16', NULL),
+(2, 1, 12, 12, 'Received', '2025-12-02 15:22:05', NULL),
+(3, 1, 12, 12, 'Received', '2025-12-02 15:35:56', NULL),
+(4, 1, 12, 12, 'Received', '2025-12-02 15:36:16', NULL),
+(5, 1, 12, 12, 'Received', '2025-12-02 15:36:23', NULL),
+(6, 1, 12, 12, 'Received', '2025-12-02 15:37:25', NULL),
+(7, 1, 12, 11, 'Received', '2025-12-02 15:47:23', NULL),
+(8, 1, 12, 11, 'Received', '2025-12-02 15:47:26', NULL),
+(9, 1, 12, 11, 'Received', '2025-12-02 15:48:03', NULL),
+(10, 1, 12, 11, 'Received', '2025-12-02 15:48:08', NULL),
+(11, 1, 12, 21, 'Received', '2025-12-03 15:51:16', NULL),
+(12, 4, 19, 33, 'Received', '2025-12-07 23:29:26', NULL),
+(13, 4, 19, 22, 'Received', '2025-12-07 23:32:16', NULL),
+(14, 4, 19, 33, 'Received', '2025-12-08 17:15:47', NULL),
+(15, 4, 19, 11, 'Received', '2025-12-09 16:18:50', NULL),
+(16, 5, 26, 23, 'Received', '2025-12-09 17:57:17', NULL),
+(17, 5, 26, 23, 'Received', '2025-12-09 17:57:33', NULL),
+(18, 1, 26, 11, 'Received', '2025-12-09 17:57:41', NULL),
+(19, 4, 26, 90, 'Received', '2025-12-10 17:56:35', NULL),
+(20, 4, 27, 90, 'Received', '2025-12-11 19:08:45', NULL),
+(21, 8, 27, 23, 'Received', '2025-12-11 22:43:18', '2025-12-12 18:04:45'),
+(22, 8, 26, 21, 'Received', '2025-12-11 22:45:06', '2025-12-12 18:12:22'),
+(23, 9, 27, 21, 'Received', '2025-12-12 15:18:00', '2025-12-12 18:12:41'),
+(24, 9, 26, 90, 'Pending', '2025-12-12 15:30:14', NULL),
+(25, 1, 27, 21, 'Pending', '2025-12-12 15:30:18', NULL),
+(26, 8, 26, 20, 'Pending', '2025-12-12 15:30:24', NULL),
+(27, 9, 27, 20, 'Pending', '2025-12-12 15:31:09', NULL),
+(28, 1, 27, 20, 'Pending', '2025-12-12 15:31:59', NULL),
+(29, 8, 28, 21, 'Pending', '2025-12-12 15:34:23', NULL),
+(30, 1, 28, 80, 'Pending', '2025-12-12 15:34:30', NULL),
+(31, 4, 27, 21, 'Pending', '2025-12-12 18:12:20', NULL);
 
 -- --------------------------------------------------------
 
@@ -559,7 +600,8 @@ INSERT INTO `sales` (`id`, `customer_id`, `item_id`, `qty`, `date_created`, `tot
 (27, 6, 26, 1, '2025-12-10 17:59:39', 12.99),
 (28, 1, 26, 1, '2025-12-10 18:00:27', 12.99),
 (29, 1, 26, 12, '2025-12-10 18:02:01', 155.88),
-(30, 1, 26, 12, '2025-12-11 18:17:21', 155.88);
+(30, 1, 26, 12, '2025-12-11 18:17:21', 155.88),
+(31, 2, 27, 20, '2025-12-12 18:14:01', 240.00);
 
 -- --------------------------------------------------------
 
@@ -579,11 +621,11 @@ CREATE TABLE `suppliers` (
 --
 
 INSERT INTO `suppliers` (`id`, `supplier_name`, `phone`, `is_deleted`) VALUES
-(1, 'Magnolia', '920831923', 0),
-(4, 'Feeds21', '092378194', 0),
+(1, 'Magnolia', '920831923', 1),
+(4, 'Feeds', '21', 1),
 (5, 'Nestle', '1273612', 0),
-(6, 'jack', '1293821312', 0),
-(7, 'Polaskjd', '2173123', 0),
+(6, 'jack', '1293821312', 1),
+(7, 'Polaskjd', '2173123', 1),
 (8, 'Prince', '021421412', 0),
 (9, 'Gaisano', '12', 0);
 
@@ -598,21 +640,22 @@ CREATE TABLE `users` (
   `name` varchar(45) DEFAULT NULL,
   `email` varchar(45) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `roles` enum('admin','staff') NOT NULL
+  `roles` enum('admin','staff') NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `roles`) VALUES
-(2, 'Mich2s', 'micch@gmail.com', '', 'staff'),
-(9, 'Michael', 'michael@gmail.com', '$2y$10$9iSaiowJ1YJEaPlLogDtlOsiBZ28l3o6JWp0z1GYLPijn3NIMXJ.i', 'admin'),
-(10, 'John Carlo Arias', 'carlo@gmail.com', '$2y$10$b/KlZueTDzZ7Fx/DKX/r2.6Re/IEiQgC6mXFZS6BifGwyrSBauP76', 'admin'),
-(30, 'Kendra Maxene Pisao', 'kendra@gmail.com', '$2y$10$GCby/Vgw7B/CtTyZZxoTVOXHb3JDN9WbwrG9Oq4EZ8ZA6RdWO0xaG', 'staff'),
-(31, 'Jelaine Faye Gica', 'jelaine@gmail.com', '$2y$10$5QslgEfjp0C676Hv8fmFb.xHqsWMHS59rHgxoT2g2m1Yce7zBnGGO', 'staff'),
-(32, 'Paulo Lumapas', 'paulo@gmail.com', '$2y$10$aVRScHA8Jmle0PSu3/ckJegRcT2OleKbohNj.LmBr1t3L4SQ90AU6', 'staff'),
-(33, 'Harvy Drona', 'harvy@gmail.com', '$2y$10$2QX9CGHRQdMIzwaAHFL3Huylu/M0uOLrc/f1MWanHYtLpWz2mSAAq', 'staff');
+INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `roles`, `is_deleted`) VALUES
+(2, 'Mich2s', 'micch@gmail.com', '', 'staff', 0),
+(9, 'Michael', 'michael@gmail.com', '$2y$10$9iSaiowJ1YJEaPlLogDtlOsiBZ28l3o6JWp0z1GYLPijn3NIMXJ.i', 'admin', 0),
+(10, 'John Carlo ', 'carlo@gmail.com', '$2y$10$0oWrs8jZ4xEmMfnVt.K1F.SHcIZNrd1celLAx6Okxfio9rSREGhOm', 'admin', 0),
+(30, 'Kendra Maxene Pisao', 'kendra@gmail.com', '$2y$10$GCby/Vgw7B/CtTyZZxoTVOXHb3JDN9WbwrG9Oq4EZ8ZA6RdWO0xaG', 'staff', 0),
+(31, 'Jelaine Faye Gica', 'jelaine@gmail.com', '$2y$10$5QslgEfjp0C676Hv8fmFb.xHqsWMHS59rHgxoT2g2m1Yce7zBnGGO', 'staff', 0),
+(32, 'Paulo Lumapas', 'paulo@gmail.com', '$2y$10$aVRScHA8Jmle0PSu3/ckJegRcT2OleKbohNj.LmBr1t3L4SQ90AU6', 'staff', 0),
+(33, 'Harvy Drona', 'harvy@gmail.com', '$2y$10$2QX9CGHRQdMIzwaAHFL3Huylu/M0uOLrc/f1MWanHYtLpWz2mSAAq', 'staff', 1);
 
 --
 -- Indexes for dumped tables
@@ -670,7 +713,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=287;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=325;
 
 --
 -- AUTO_INCREMENT for table `customers`
@@ -688,13 +731,13 @@ ALTER TABLE `inventory`
 -- AUTO_INCREMENT for table `purchase_orders`
 --
 ALTER TABLE `purchase_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `sales`
 --
 ALTER TABLE `sales`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
