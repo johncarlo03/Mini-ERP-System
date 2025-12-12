@@ -62,6 +62,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $action_logs[] = "$item_name price updated from {$edited_item['price']} to {$price} ";
         }
 
+        if ($edited_item['description'] !== $description) {
+            $action_logs[] = "$item_name description changed to {$description} ";
+        }
+
+
         $message = '<div>Item <b>"' . htmlspecialchars($item_name) . '"</b> updated successfully!</div>';
         if (empty($action_logs)) {
             $action = "Item (ID: {$id}) updated, but no logged fields were changed.";
@@ -73,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $log_sql = "INSERT INTO audit_logs (user_id, action, date_time) VALUES (?, ?, NOW())";
         $log_stmt = $conn->prepare($log_sql);
         $log_stmt->execute([$user_id, $action]);
+        header("Location: ../admin/inventory_management.php?edited=1");
     } else {
         try {
             $check_sql = "SELECT COUNT(*) FROM inventory WHERE item_name = ?";
