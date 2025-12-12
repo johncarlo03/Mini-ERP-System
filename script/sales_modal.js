@@ -80,5 +80,55 @@ window.loadCustomerDetails = function (customerId) {
     customerEditForm.classList.remove("hidden");
   }
 };
-// Add sales_modal.js to your <head>
-// <script src="../../script/sales_modal.js" defer></script>
+
+window.confirmDelete = function (customerId) {
+    Swal.fire({
+      title: "Confirm Deletion",
+      text: "Are you sure you want to delete this customer? This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById("delete_customer_id").value = customerId;
+        Swal.fire({
+          title: "Processing...",
+          text: "Removing customer.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        setTimeout(() => {
+          document.getElementById("deleteCustomerForm").submit();
+        }, 500);
+      }
+    });
+  };
+
+  if (window.location.search.includes("deleted=1")) {
+    Swal.fire({
+      icon: "success",
+      title: "Deleted!",
+      text: "The customer has been successfully removed.", // Updated text
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else if (window.location.search.includes("edited=1")) {
+    Swal.fire({
+      icon: "success",
+      title: "Updated!", // Changed title for clarity
+      text: "The customer has been successfully updated.", // Updated text
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  }
+
+  setTimeout(() => {
+    if (window.location.search) {
+      window.history.replaceState(null, null, window.location.pathname);
+    }
+  }, 500);

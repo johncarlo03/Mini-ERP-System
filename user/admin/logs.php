@@ -33,7 +33,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
     
-    <div class="ml-64 p-10 <?= $initial_margin_class ?> fade-in-content">
+    <div id="mainContent" class="ml-64 p-10 min-h-screen bg-gray-100 <?= $initial_margin_class ?> fade-in-content">
 
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Logs</h1>

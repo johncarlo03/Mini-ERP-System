@@ -29,7 +29,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
 
-    <div class="ml-64 p-10 fade-in-content <?= $initial_margin_class ?>">
+    <div id="mainContent" class="ml-64 p-10 min-h-screen bg-gray-100 <?= $initial_margin_class ?> fade-in-content">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">Staff Management</h1>
 
         <div class="bg-white p-8 rounded-lg shadow-xl w-full mb-8 transition duration-300 hover:shadow-2xl">

@@ -13,6 +13,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini ERP - Sales & Customer Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../../css/admin.css">
     <script src="../../script/sidebar.js" defer></script>
     <script src="../../script/sales_modal.js" defer></script>
@@ -22,7 +23,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
 
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
-    <div class="ml-64 p-10 <?= $initial_margin_class ?>">
+    <div id="mainContent" class="ml-64 p-10 <?= $initial_margin_class ?>">
 
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-2">
@@ -257,7 +258,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
                         Customer to Edit</label>
                     <select id="edit_customer_select" onchange="loadCustomerDetails(this.value)"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 bg-white">
-                        <option value="">-- Select Customer --</option>
+                        <option value="">Select Customer</option>
                         <?php foreach ($customers as $customer): ?>
                             <option value="<?php echo htmlspecialchars($customer['id']); ?>"
                                 data-name="<?php echo htmlspecialchars($customer['name']); ?>"
@@ -271,7 +272,7 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
                 <form id="customer_edit_form" method="POST" action="sales.php"
                     class="space-y-4 border-t pt-4 mt-4 hidden">
                     <input type="hidden" name="action" value="edit_customer">
-                    <input type="number" id="edit_customer_id" name="customer_id">
+                    <input type="name" id="edit_customer_id" name="customer_id">
 
                     <div>
                         <label for="edit_customer_name"
@@ -291,10 +292,17 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'staff') {
                         class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md">
                         Save Changes
                     </button>
-                    <button type="submit" value="delete" name="customer_action"
+                    <button type="button" value="delete" name="customer_action"
+                        onclick="confirmDelete(document.getElementById('edit_customer_id').value)"
                         class="w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition duration-200 shadow-md">
                         Delete Customer
                     </button>
+                </form>
+
+                <form method="POST" action="sales.php" id="deleteCustomerForm">
+                    <input type="hidden" name="action" value="edit_customer">
+                    <input type="hidden" value="delete" name="customer_action">
+                    <input type="hidden" id="delete_customer_id" name="customer_id">
                 </form>
 
             </div>
