@@ -23,24 +23,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // --- Part B: Persistence (Save State on Click) ---
   toggleBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
+  sidebar.classList.toggle("collapsed");
 
-    if (sidebar.classList.contains("collapsed")) {
-      // Save the collapsed state
-      localStorage.setItem("sidebarState", "collapsed");
-      stateInput.value = "collapsed";
+  if (sidebar.classList.contains("collapsed")) {
+    localStorage.setItem("sidebarState", "collapsed");
+    stateInput.value = "collapsed";
 
-      // Adjust margin
-      pageContainer.classList.remove("ml-64");
-      pageContainer.classList.add("ml-16");
-    } else {
-      // Save the expanded state
-      localStorage.setItem("sidebarState", "expanded");
-      stateInput.value = "expanded";
+    requestAnimationFrame(() => {
+                pageContainer.classList.remove("ml-64");
+                pageContainer.classList.add("ml-16");
+            });
+  } else {
+    localStorage.setItem("sidebarState", "expanded");
+    stateInput.value = "expanded";
 
-      // Adjust margin
-      pageContainer.classList.remove("ml-16");
-      pageContainer.classList.add("ml-64");
-    }
-  });
+    requestAnimationFrame(() => {
+                pageContainer.classList.remove("ml-16");
+                pageContainer.classList.add("ml-64");
+            });
+  }
+});
+
 });
