@@ -18,15 +18,17 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
     <script src="../../script/sidebar.js" defer></script>
     <link rel="stylesheet" href="../../css/admin.css">
 </head>
+
 <body class="bg-gray-100">
     <input type="hidden" id="sidebar_state_input" name="sidebar_state" value="expanded">
     <?php include "sidebar.php"; ?>
 
-    <div class="ml-64 p-10 <?= $initial_margin_class ?> fade-in-content">
+    <div id="mainContent" class="ml-64 p-10 min-h-screen bg-gray-100 <?= $initial_margin_class ?> fade-in-content">
         <h1 class="text-3xl font-bold mb-8 text-gray-800">Inventory Management</h1>
 
         <?php if (!empty($message)): ?>
-            <div class="p-3 mb-4 rounded bg-green-100 text-green-700 border border-green-300 transition duration-300 transform translate-y-0 opacity-100">
+            <div
+                class="p-3 mb-4 rounded bg-green-100 text-green-700 border border-green-300 transition duration-300 transform translate-y-0 opacity-100">
                 <?= $message ?>
             </div>
         <?php endif; ?>
@@ -50,22 +52,25 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                     <input type="hidden" id="delete_product_id" name="delete_id">
                 </form>
             </div>
-            
+
             <form method="POST" action="inventory_management.php" class="space-y-4" enctype="multipart/form-data">
                 <input type="hidden" id="product_id" name="id">
 
                 <div class="grid grid-cols-2 gap-6">
                     <div>
                         <input type="text" id="item_name" name="item_name" placeholder="Item Name"
-                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150" required>
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150"
+                            required>
                     </div>
                     <div>
                         <input type="number" id="item_price" name="item_price" placeholder="Price" step="0.01"
-                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150" required>
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150"
+                            required>
                     </div>
                     <div>
                         <input type="number" id="qty" name="qty" min="0" placeholder="Initial Quantity"
-                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150" required>
+                            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 transition duration-150"
+                            required>
                     </div>
 
                     <div>
@@ -115,7 +120,10 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                                 Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock
+                            <th id="stockHeader" onclick="sortTableByQuantity(3)"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider sortable-header">
+                                Stock
+                                <span id="sortIndicator" class="sort-icon"></span>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price
                             </th>
@@ -132,13 +140,17 @@ if (!isset($_SESSION['id']) || $_SESSION['roles'] !== 'admin') {
                                         class="w-12 h-12 object-cover rounded-md border border-gray-200 transition duration-150 hover:shadow-lg hover:border-blue-300">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars($item['item_name']) ?></td>
+                                    <?= htmlspecialchars($item['item_name']) ?>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars($item['description']) ?></td>
+                                    <?= htmlspecialchars($item['description']) ?>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars($item['qty']) ?></td>
+                                    <?= htmlspecialchars($item['qty']) ?>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?= htmlspecialchars($item['price']) ?></td>
+                                    <?= htmlspecialchars($item['price']) ?>
+                                </td>
                                 <td class="px-6 text-center py-4 whitespace-nowrap text-sm font-medium">
                                     <button onclick="fillForm(
                                         <?= $item['id'] ?>,
