@@ -18,8 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') == 'delete
         $item_stmt = $conn->prepare($item_name);
         $item_stmt->execute([$id]);
         $deleted_item = $item_stmt->fetchColumn();
-
-        $sql = "DELETE FROM inventory WHERE id = ?";
+        $sql = "UPDATE inventory SET is_deleted = 1 WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
 
@@ -48,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && ($_POST['action'] ?? '') == 'delete
         $user_stmt->execute([$id]);
         $deleted_user = $user_stmt->fetchColumn();
 
-        $sql = "DELETE FROM users WHERE id = ?";
+        $sql = "UPDATE users SET is_deleted = 1 WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$id]);
 

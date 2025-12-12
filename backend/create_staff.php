@@ -1,7 +1,7 @@
 <?php
 include "../../db.php";
 
-$staff_sql = "SELECT id, name, email, roles FROM users ORDER BY id ASC";
+$staff_sql = "SELECT id, name, email, roles FROM users WHERE is_deleted = 0 ORDER BY id ASC";
 $staffs = $conn->query($staff_sql)->fetchAll();
 
 $user_id = $_SESSION['id'];
