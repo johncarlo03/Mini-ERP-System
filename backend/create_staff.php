@@ -89,6 +89,8 @@ if (isset($_POST['signup'])) {
         $log_stmt = $conn->prepare($log_sql);
         $log_stmt->execute([$user_id, $action]);
 
+        header("Location: ../admin/staff_creation.php?edited=1");
+
     } elseif (empty($id)) {
         if (empty($name) || empty($email) || empty($password) || empty($password_confirm)) {
             $error_message = "All fields are required.";
